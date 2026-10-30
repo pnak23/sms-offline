@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <!-- Decision D1 (docs/PHASE0-ARCHITECTURE.md §2A): Spring Boot 4.1.x on Java 21. Newest stable 4.1 patch on 2026-10-30. -->
+    <version>4.1.2</version>
+    <relativePath/>
+  </parent>
+  <groupId>kh.school</groupId>
+  <artifactId>sms-backend</artifactId>
+  <version>0.1.0</version>
+  <name>sms-backend</name>
+  <description>Offline Khmer primary school management system — local backend</description>
+  <properties>
+    <java.version>21</java.version>
+    <poi.version>5.5.1</poi.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  <dependencies>
+    <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-webmvc</artifactId></dependency>
+    <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-security</artifactId></dependency>
+    <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-validation</artifactId></dependency>
+    <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-data-jpa</artifactId></dependency>
+    <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-flyway</artifactId></dependency>
+    <dependency><groupId>org.xerial</groupId><artifactId>sqlite-jdbc</artifactId></dependency>
+    <dependency><groupId>org.hibernate.orm</groupId><artifactId>hibernate-community-dialects</artifactId><version>${hibernate.version}</version></dependency>
+    <!-- Excel exports arrive in Phase 4; POI is proven by spike S2 and kept out of the runtime until then. -->
+    <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-test</artifactId><scope>test</scope></dependency>
+  </dependencies>
+  <build>
+    <finalName>sms-backend</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>

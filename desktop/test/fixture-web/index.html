@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="km">
+<head>
+<meta charset="utf-8">
+<title>Shell test fixture</title>
+<style>
+  /* A UNIQUE family name: the dev PC has Noto Sans Khmer installed system-wide, so using that name would hide a
+     font-bundling bug. "SmsKhmerTest" can only be satisfied by the file we ship. */
+  @font-face { font-family: "SmsKhmerTest"; font-weight: 400; src: url("/fonts/noto-sans-khmer-400.woff2") format("woff2"); }
+  @font-face { font-family: "SmsKhmerTest"; font-weight: 700; src: url("/fonts/noto-sans-khmer-700.woff2") format("woff2"); }
+  @page { size: A4; margin: 15mm; }
+  body { font-family: "SmsKhmerTest", sans-serif; font-size: 16px; line-height: 1.7; margin: 24px; color: #111; }
+  h1 { font-size: 24px; font-weight: 700; }
+  table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+  td, th { border: 1px solid #555; padding: 6px 10px; }
+  th { background: #e8edf3; }
+  .narrow { width: 260px; border: 1px dashed #999; padding: 8px; }
+  @media print { .no-print { display: none; } th { background: #e8edf3 !important; } }
+</style>
+</head>
+<body>
+  <h1>សាលាបឋមសិក្សា ភូមិថ្មី — បញ្ជីសិស្ស</h1>
+  <p>សូមស្វាគមន៍មកកាន់ប្រព័ន្ធគ្រប់គ្រងសាលា។ ថ្ងៃទី ៣០ ខែ តុលា ឆ្នាំ ២០២៦។ សិស្សស្រីមានចំនួន ១២៣ នាក់ ហើយសិស្សប្រុសមានចំនួន ១៤៥ នាក់។</p>
+  <div class="narrow" id="wrap">ក្រុមការងារអប់រំបានប្រជុំពិភាក្សាអំពីការកែលម្អគុណភាពអប់រំនៅសាលាបឋមសិក្សាក្នុងភូមិឃុំស្រុកខេត្តរបស់យើង។</div>
+  <table>
+    <tr><th>លេខ</th><th>គោត្តនាម និងនាម</th><th>ភេទ</th><th>ពិន្ទុ</th></tr>
+    <tr><td>១</td><td>ស៊ុន ចាន់ថា</td><td>ស្រី</td><td>៨.៥</td></tr>
+    <tr><td>២</td><td>គឹម សុខា</td><td>ប្រុស</td><td>៧.២៥</td></tr>
+    <tr><td>៣</td><td>ឈួន សុវណ្ណារ៉ា</td><td>ស្រី</td><td>៩</td></tr>
+    <tr><td>៤</td><td>ខៀវ ស្រីពៅ</td><td>ស្រី</td><td>៦.៧៥</td></tr>
+  </table>
+  <p class="no-print"><button id="b">no-print button</button></p>
+  <pre id="out"></pre>
+</body>
+</html>

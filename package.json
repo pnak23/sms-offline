@@ -1,0 +1,26 @@
+{
+  "name": "sms-offline",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Offline Khmer primary school management system (Windows desktop)",
+  "workspaces": [
+    "frontend",
+    "desktop"
+  ],
+  "engines": {
+    "node": ">=22.22.3 || >=24.15.0"
+  },
+  "scripts": {
+    "backend:test": "node scripts/run-mvn.mjs test",
+    "backend:build": "node scripts/run-mvn.mjs package -DskipTests",
+    "frontend:build": "npm run generate -w frontend",
+    "smoke:backend": "node scripts/smoke-backend.mjs",
+    "test:desktop": "node --test desktop/test/config.test.mjs",
+    "e2e:shell": "node desktop/test/e2e-shell.mjs",
+    "e2e:packaged": "node desktop/test/e2e-packaged.mjs",
+    "build:all": "node scripts/build-all.mjs",
+    "build:all:dir": "node scripts/build-all.mjs --dir",
+    "e2e:app": "node desktop/test/e2e-app.mjs",
+    "e2e:ui": "npm run e2e -w frontend"
+  }
+}

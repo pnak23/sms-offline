@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="km">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; font-src 'self'; script-src 'unsafe-inline'">
+<title>School Management</title>
+<style>
+  @font-face { font-family: "Noto Sans Khmer"; font-weight: 400; src: url("fonts/noto-sans-khmer-400.woff2") format("woff2"); }
+  @font-face { font-family: "Noto Sans Khmer"; font-weight: 700; src: url("fonts/noto-sans-khmer-700.woff2") format("woff2"); }
+  html, body { margin: 0; background: #fff; font-family: "Noto Sans Khmer", "Leelawadee UI", "Segoe UI", sans-serif; color: #1f2d3d; }
+  main { padding: 32px 40px; }
+  h1 { font-size: 24px; font-weight: 700; margin: 0 0 12px; line-height: 1.7; color: #b3261e; }
+  p { font-size: 17px; line-height: 1.8; margin: 0 0 14px; }
+  .code { font-family: Consolas, monospace; font-size: 13px; color: #5b6b7c; background: #f2f4f7; padding: 6px 10px; border-radius: 6px; display: inline-block; }
+  .actions { display: flex; gap: 12px; margin-top: 26px; }
+  button { font: inherit; font-size: 16px; padding: 10px 20px; border-radius: 8px; border: 1px solid #b8c2cf; background: #fff; color: #1f2d3d; cursor: pointer; }
+  button.primary { background: #2f6fb3; border-color: #2f6fb3; color: #fff; }
+  button:focus-visible { outline: 3px solid #8fb8e3; outline-offset: 2px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>កម្មវិធីមិនអាចចាប់ផ្តើមបានទេ</h1>
+  <p id="message"></p>
+  <p>ទិន្នន័យរបស់អ្នកមិនបាត់បង់ទេ។ <span class="code" id="code"></span></p>
+  <div class="actions">
+    <button class="primary" id="retry" autofocus>ព្យាយាមម្តងទៀត</button>
+    <button id="logs">បើកថតកំណត់ហេតុ</button>
+    <button id="quit">ចាកចេញ</button>
+  </div>
+</main>
+<script>
+  const MESSAGES = {
+    DATA_DIR_UNAVAILABLE: 'មិនអាចចូលប្រើថតទិន្នន័យរបស់កម្មវិធីបានទេ។ សូមពិនិត្យថាថាសមានទំហំទំនេរគ្រប់គ្រាន់ ហើយអាចសរសេរបាន។',
+    DATA_DIR_WRITABLE: 'មិនអាចចូលប្រើថតទិន្នន័យរបស់កម្មវិធីបានទេ។ សូមពិនិត្យថាថាសមានទំហំទំនេរគ្រប់គ្រាន់ ហើយអាចសរសេរបាន។',
+    DISK_SPACE: 'ទំហំទំនេរលើថាសមិនគ្រប់គ្រាន់ទេ។ សូមលុបឯកសារមួយចំនួន រួចព្យាយាមម្តងទៀត។',
+    DATABASE_LOCKED: 'មូលដ្ឋានទិន្នន័យកំពុងត្រូវបានប្រើដោយកម្មវិធីមួយទៀត។ សូមបិទកម្មវិធីនេះទាំងអស់ រួចបើកម្តងទៀត។',
+    DATABASE_CORRUPT: 'មូលដ្ឋានទិន្នន័យមានបញ្ហា។ សូមស្តារទិន្នន័យពីឯកសារបម្រុងទុកចុងក្រោយ។',
+    DATABASE: 'មូលដ្ឋានទិន្នន័យមានបញ្ហា។ សូមស្តារទិន្នន័យពីឯកសារបម្រុងទុកចុងក្រោយ។',
+    SCHEMA_NEWER_THAN_APP: 'ទិន្នន័យនេះត្រូវបានបង្កើតដោយកម្មវិធីកំណែថ្មីជាងនេះ។ សូមដំឡើងកម្មវិធីកំណែថ្មីបំផុត។',
+    SCHEMA_VERSION: 'ទិន្នន័យនេះត្រូវបានបង្កើតដោយកម្មវិធីកំណែថ្មីជាងនេះ។ សូមដំឡើងកម្មវិធីកំណែថ្មីបំផុត។',
+    MIGRATION_FAILED: 'ការធ្វើបច្ចុប្បន្នភាពមូលដ្ឋានទិន្នន័យមិនបានជោគជ័យទេ។ សូមទាក់ទងអ្នកជំនួយបច្ចេកទេស។',
+    TIMEOUT: 'កម្មវិធីចាប់ផ្តើមយឺតពេកហើយ។ សូមព្យាយាមម្តងទៀត។',
+    JAVA_MISSING: 'ឯកសារចាំបាច់មួយចំនួនរបស់កម្មវិធីបាត់។ សូមដំឡើងកម្មវិធីម្តងទៀត (ទិន្នន័យរបស់អ្នកនឹងមិនបាត់បង់ទេ)។',
+    UI_MISSING: 'ឯកសារចាំបាច់មួយចំនួនរបស់កម្មវិធីបាត់។ សូមដំឡើងកម្មវិធីម្តងទៀត (ទិន្នន័យរបស់អ្នកនឹងមិនបាត់បង់ទេ)។',
+  };
+  const DEFAULT = 'កម្មវិធីមិនអាចចាប់ផ្តើមបានទេ។ សូមព្យាយាមម្តងទៀត ឬបើកថតកំណត់ហេតុ ដើម្បីផ្ញើទៅអ្នកជំនួយបច្ចេកទេស។';
+  window.errorApi.getInfo().then(({ code }) => {
+    document.getElementById('message').textContent = MESSAGES[code] || DEFAULT;
+    document.getElementById('code').textContent = code;
+  });
+  document.getElementById('retry').addEventListener('click', () => window.errorApi.retry());
+  document.getElementById('logs').addEventListener('click', () => window.errorApi.openLogs());
+  document.getElementById('quit').addEventListener('click', () => window.errorApi.quit());
+</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+/* A4 printing (Chromium print pipeline, docs D3). The toolbar and chrome carry .no-print. */
+
+@page {
+  size: A4;
+  margin: 15mm;
+}
+
+.print-screen {
+  height: 100vh;
+  min-height: 650px;
+  overflow: auto;
+  background: #e4e8ee;
+  padding: 1.25rem 1rem 2rem;
+}
+
+.print-toolbar {
+  max-width: 210mm;
+  margin: 0 auto 1rem;
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* The sheet is drawn at the printable width (210mm - 2 x 15mm) with the margins shown as padding on screen */
+.print-sheet {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 15mm;
+  background: #fff;
+  color: #000;
+  box-shadow: 0 2px 14px rgba(20, 30, 45, 0.18);
+}
+
+@media print {
+  html,
+  body,
+  #__nuxt {
+    height: auto !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-screen {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+    background: #fff;
+    padding: 0;
+  }
+
+  .print-sheet {
+    width: auto;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .lock-overlay,
+  .backend-overlay {
+    display: none !important;
+  }
+}

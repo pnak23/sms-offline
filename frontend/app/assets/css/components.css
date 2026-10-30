@@ -1,0 +1,730 @@
+/* Component styles. Everything here is plain CSS on top of theme.css variables. */
+
+.app-icon {
+  width: 1.1em;
+  height: 1.1em;
+  flex: none;
+  vertical-align: -0.17em;
+}
+
+/* ---- Page structure -------------------------------------------------------------------------------------- */
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.page-header-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.state-block {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 0;
+  color: var(--sms-muted);
+}
+
+.state-block.is-error {
+  color: var(--sms-danger);
+  flex-wrap: wrap;
+}
+
+.wizard-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--sms-border);
+}
+
+.auth-card-area {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: auto;
+}
+
+/* ---- Sidebar ---------------------------------------------------------------------------------------------- */
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  height: 3.5rem;
+  padding: 0 1.15rem;
+  flex: none;
+  color: #fff;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+}
+
+.sidebar-brand-icon {
+  font-size: 1.5rem;
+}
+
+.sidebar-nav {
+  flex: 1 1 auto;
+  padding: 0.75rem 0.6rem;
+}
+
+.sidebar-group + .sidebar-group {
+  margin-top: 0.75rem;
+}
+
+.sidebar-group-title {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.85rem;
+  color: rgba(201, 211, 224, 0.65);
+}
+
+.sidebar-divider {
+  margin: 0.5rem 0.5rem;
+  border-color: rgba(255, 255, 255, 0.15);
+  opacity: 1;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.15rem;
+  border-radius: 0.5rem;
+  color: var(--sms-sidebar-text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.sidebar-link.is-active {
+  background: var(--sms-sidebar-active);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 #6aa6dd;
+}
+
+.sidebar-link .app-icon {
+  font-size: 1.15rem;
+}
+
+.sidebar-toggle {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0.5rem 0.6rem 0.75rem;
+  padding: 0.45rem 0.75rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: rgba(201, 211, 224, 0.8);
+  white-space: nowrap;
+}
+
+.sidebar-toggle:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.is-collapsed .sidebar-brand,
+.is-collapsed .sidebar-toggle,
+.is-collapsed .sidebar-link {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* ---- Header ----------------------------------------------------------------------------------------------- */
+
+.header-school {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.header-logo {
+  height: 2.1rem;
+  width: auto;
+  max-width: 3.5rem;
+  object-fit: contain;
+}
+
+.header-school-name {
+  font-weight: 600;
+  font-size: 1.05rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* the full name is in the title tooltip */
+  max-width: 46vw;
+}
+
+.user-menu-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-menu-name {
+  max-width: 14rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-menu-header {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* ---- Overlays (lock screen, backend lost) ----------------------------------------------------------------- */
+
+.lock-overlay,
+.backend-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  overflow-y: auto;
+  background: var(--sms-bg);
+}
+
+.backend-overlay {
+  z-index: 2100;
+  background: rgba(243, 245, 248, 0.97);
+}
+
+.lock-card,
+.backend-card {
+  width: 100%;
+  max-width: 420px;
+}
+
+.backend-card {
+  max-width: 480px;
+}
+
+.lock-icon,
+.backend-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  margin: 0 auto 0.75rem;
+  border-radius: 50%;
+  background: var(--sms-primary-soft);
+  color: var(--sms-primary);
+  font-size: 1.75rem;
+}
+
+.backend-icon {
+  background: var(--sms-danger-soft);
+  color: var(--sms-danger);
+}
+
+.backend-icon.is-waiting {
+  background: var(--sms-primary-soft);
+  color: var(--sms-primary);
+}
+
+/* ---- Recovery key ----------------------------------------------------------------------------------------- */
+
+.recovery-key-block {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem 0;
+  margin: 0.5rem 0 1rem;
+  padding: 1rem 1.25rem;
+  border: 2px dashed #8fa4bc;
+  border-radius: 0.75rem;
+  background: #f7f9fc;
+  font-family: var(--bs-font-monospace);
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+  color: #14202e;
+  user-select: none; /* the key is deliberately not copyable (clipboard history); print it instead */
+}
+
+.recovery-key-group {
+  white-space: nowrap;
+}
+
+/* the dashes of XXXXX-XXXXX-... are drawn (not text), so reading the groups gives the bare characters */
+.recovery-key-group:not(:last-child)::after {
+  content: '-';
+  padding: 0 0.55rem;
+  color: #7b8aa0;
+}
+
+.retype-group {
+  max-width: 12rem;
+}
+
+.username-chip {
+  padding: 0.1rem 0.5rem;
+  border-radius: 0.375rem;
+  background: rgba(255, 255, 255, 0.7);
+  font-family: var(--bs-font-monospace);
+}
+
+/* ---- Stepper ---------------------------------------------------------------------------------------------- */
+
+.stepper {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stepper-item {
+  position: relative;
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.stepper-item::before {
+  content: '';
+  position: absolute;
+  top: 1.05rem;
+  right: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--sms-border);
+}
+
+.stepper-item:first-child::before {
+  display: none;
+}
+
+.stepper-item.is-done::before,
+.stepper-item.is-current::before {
+  background: var(--sms-primary);
+}
+
+.stepper-dot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  border: 2px solid var(--sms-border);
+  background: var(--sms-surface);
+  font-weight: 600;
+  color: var(--sms-muted);
+}
+
+.stepper-item.is-current .stepper-dot {
+  border-color: var(--sms-primary);
+  background: var(--sms-primary);
+  color: #fff;
+}
+
+.stepper-item.is-done .stepper-dot {
+  border-color: var(--sms-primary);
+  background: var(--sms-primary-soft);
+  color: var(--sms-primary);
+}
+
+.stepper-label {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--sms-muted);
+}
+
+.stepper-item.is-current .stepper-label {
+  color: var(--sms-text);
+  font-weight: 600;
+}
+
+/* ---- Forms ------------------------------------------------------------------------------------------------ */
+
+.strength {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.4rem;
+}
+
+.strength-bar {
+  display: flex;
+  gap: 0.25rem;
+  width: 6rem;
+}
+
+.strength-segment {
+  flex: 1;
+  height: 0.35rem;
+  border-radius: 0.2rem;
+  background: var(--sms-border);
+}
+
+.strength[data-level='weak'] .strength-segment.is-on {
+  background: var(--sms-danger);
+}
+
+.strength[data-level='fair'] .strength-segment.is-on {
+  background: #d9902b;
+}
+
+.strength[data-level='good'] .strength-segment.is-on {
+  background: var(--sms-success);
+}
+
+.strength-label {
+  font-size: 0.9rem;
+  color: var(--sms-muted);
+}
+
+.logo-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 8rem;
+  height: 8rem;
+  border: 1px solid var(--sms-border);
+  border-radius: 0.5rem;
+  background: #fff;
+  overflow: hidden;
+}
+
+.logo-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.logo-preview.is-empty {
+  border-style: dashed;
+  background: #f7f9fc;
+  color: #9aa6b6;
+  font-size: 2.5rem;
+}
+
+.restore-note {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.chip-list,
+.subject-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  margin: 0 0 0.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  padding: 0.15rem 0.8rem;
+  border: 1px solid var(--sms-border);
+  border-radius: 999px;
+  background: #fff;
+}
+
+.subject-item {
+  min-width: 16rem;
+}
+
+.summary-list {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.35rem 1.5rem;
+  margin: 0 0 1rem;
+}
+
+.summary-list dt {
+  font-weight: 500;
+  color: var(--sms-muted);
+}
+
+.summary-list dd {
+  margin: 0;
+}
+
+/* ---- Health ----------------------------------------------------------------------------------------------- */
+
+.health-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.health-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid #edf0f4;
+}
+
+.health-row:last-child {
+  border-bottom: 0;
+}
+
+.health-row-icon {
+  margin-top: 0.3rem;
+  font-size: 1.1rem;
+}
+
+.health-row.is-success .health-row-icon {
+  color: var(--sms-success);
+}
+
+.health-row.is-warning .health-row-icon {
+  color: #c27a00;
+}
+
+.health-row.is-danger .health-row-icon {
+  color: var(--sms-danger);
+}
+
+.health-row.is-secondary .health-row-icon {
+  color: #6b7a8c;
+}
+
+.health-row-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.health-row-title {
+  font-weight: 600;
+}
+
+.health-row-message {
+  color: var(--sms-muted);
+}
+
+.health-list.is-dense .health-row {
+  padding: 0.25rem 0;
+  align-items: baseline;
+}
+
+.health-list.is-dense .health-row-icon {
+  margin-top: 0;
+  align-self: center;
+}
+
+.health-list.is-dense .health-row-text {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0 0.6rem;
+  align-items: baseline;
+}
+
+.health-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.95rem;
+}
+
+.health-badge.is-success,
+.health-chip.is-success {
+  background: var(--sms-success-soft);
+  color: #0f5132;
+}
+
+.health-badge.is-warning,
+.health-chip.is-warning {
+  background: var(--sms-warning-soft);
+  color: #5e3900;
+}
+
+.health-badge.is-danger,
+.health-chip.is-danger {
+  background: var(--sms-danger-soft);
+  color: #7a1710;
+}
+
+.health-badge.is-secondary,
+.health-chip.is-secondary {
+  background: #eceff3;
+  color: #3d4756;
+}
+
+.health-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.health-chip:hover {
+  filter: brightness(0.96);
+}
+
+.startup-list,
+.printer-list {
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.startup-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: var(--bs-font-monospace);
+  font-size: 0.9rem;
+}
+
+.printer-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.printer-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- Dashboard -------------------------------------------------------------------------------------------- */
+
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.task-icon {
+  font-size: 1.4rem;
+  color: var(--sms-primary);
+}
+
+.task-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* ---- Printed recovery-key sheet --------------------------------------------------------------------------- */
+
+.key-sheet {
+  display: flex;
+  flex-direction: column;
+  font-size: 12pt;
+  line-height: 1.8;
+}
+
+.key-sheet-school {
+  margin: 0 0 0.25rem;
+  text-align: center;
+  font-family: var(--sms-title-font);
+  font-size: 15pt;
+  line-height: 2;
+}
+
+.key-sheet-title {
+  margin: 0 0 12mm;
+  text-align: center;
+  font-size: 18pt;
+  font-weight: 700;
+}
+
+.key-sheet-key {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 2mm 0;
+  margin: 0 0 10mm;
+  padding: 9mm 4mm;
+  border: 0.5mm solid #000;
+  border-radius: 2mm;
+  font-family: var(--bs-font-monospace);
+  font-size: 21pt;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.4;
+}
+
+.key-sheet-key span {
+  white-space: nowrap;
+}
+
+.key-sheet-key span:not(:last-child)::after {
+  content: '-';
+  padding: 0 1.5mm;
+}
+
+.key-sheet-note {
+  font-weight: 600;
+  font-size: 13pt;
+}
+
+.key-sheet-rules {
+  margin: 0 0 14mm;
+  padding-left: 6mm;
+}
+
+.key-sheet-footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 10mm;
+  padding-top: 10mm;
+}
+
+.key-sheet-signature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 70mm;
+}
+
+.signature-line {
+  display: block;
+  width: 100%;
+  height: 14mm;
+  border-bottom: 0.3mm solid #000;
+}
+
+/* ---- Toasts (bootstrap-vue-next container): below the 3.5rem header so titles and the user menu stay readable ------- */
+
+.toast-container.top-0.start-50 {
+  top: 3.6rem !important;
+}

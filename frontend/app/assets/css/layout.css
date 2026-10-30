@@ -1,0 +1,121 @@
+/* Application shell. Designed for 1366x768 and 1280x720 CSS px; the desktop window never goes below 1200x650. */
+
+html,
+body,
+#__nuxt {
+  height: 100%;
+}
+
+body {
+  overflow: hidden;
+  min-width: 1200px;
+  min-height: 650px;
+}
+
+html {
+  overflow: auto; /* only matters when a plain browser window is smaller than the minimum */
+}
+
+.app-shell {
+  --sidebar-width: 250px;
+  display: grid;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  height: 100vh;
+  min-height: 650px;
+}
+
+.app-shell.is-collapsed {
+  --sidebar-width: 68px;
+}
+
+.app-sidebar {
+  background: var(--sms-sidebar-bg);
+  color: var(--sms-sidebar-text);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.app-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.app-header {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  height: 3.5rem;
+  padding: 0 1.25rem;
+  background: var(--sms-surface);
+  border-bottom: 1px solid var(--sms-border);
+}
+
+.app-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 1.5rem 1.75rem 2rem;
+}
+
+.page-container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.page-container.is-narrow {
+  max-width: 720px;
+}
+
+/* Auth layout: a centred card; the area scrolls if the content is taller than the window */
+.auth-shell {
+  height: 100vh;
+  min-height: 650px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem;
+}
+
+.auth-brand {
+  margin: auto 0 0;
+  padding-bottom: 1.1rem;
+  text-align: center;
+}
+
+.auth-brand-title {
+  font-family: var(--sms-title-font);
+  font-weight: 400;
+  font-size: 1.3rem;
+  line-height: 1.9;
+  color: var(--sms-primary-active);
+  margin: 0;
+}
+
+.auth-brand-sub {
+  color: var(--sms-muted);
+  margin: 0;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 460px;
+  margin: 0 0 auto;
+}
+
+.auth-card.is-wide {
+  max-width: 860px;
+}
+
+/* Tables and forms scroll inside their card, never the page */
+.scroll-x {
+  overflow-x: auto;
+  max-width: 100%;
+}
