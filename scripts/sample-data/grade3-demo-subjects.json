@@ -1,0 +1,61 @@
+{
+  "_README": "DEMO / TEST DATA ONLY. This is NOT the school's curriculum and NOT an official subject list or an official set of maximum marks. Every subject, sub-subject and mark below is a made-up SAMPLE for trying the program out. It is read by scripts/seed-sample-data.mjs and loaded ONLY into the fictional sample school (.sample-data), never into a real school's data. Nothing about it is hardcoded in the application: the program has no built-in subjects or marks beyond its own editable starting list. The Khmer names are an AI-drafted translation of the English names the owner gave for this sample and have NOT been reviewed by a Khmer speaker. Nothing here assumes how quizzes and examinations are weighted: no quiz is configured. Each main subject's maximum (mainMax) is simply the sum of its sub-subjects' marks in this sample.",
+  "demo": true,
+  "title": "Grade 3 sample subject configuration (DEMO / TEST DATA ONLY)",
+  "label": { "km": "(គំរូ)", "en": "[DEMO]" },
+  "gradeLevel": 3,
+  "mains": [
+    {
+      "nameKm": "ភាសាខ្មែរ", "nameEn": "Khmer Language", "mainMax": 40,
+      "subs": [
+        { "nameKm": "ការអាន", "nameEn": "Reading", "max": 10 },
+        { "nameKm": "ការសរសេរ", "nameEn": "Writing", "max": 10 },
+        { "nameKm": "សរសេរតាមអាន", "nameEn": "Dictation", "max": 10 },
+        { "nameKm": "វេយ្យាករណ៍", "nameEn": "Grammar", "max": 10 }
+      ]
+    },
+    {
+      "nameKm": "គណិតវិទ្យា", "nameEn": "Mathematics", "mainMax": 40,
+      "subs": [
+        { "nameKm": "ចំនួន និងការគណនា", "nameEn": "Number & Calculation", "max": 15 },
+        { "nameKm": "ធរណីមាត្រ", "nameEn": "Geometry", "max": 10 },
+        { "nameKm": "ដោះស្រាយបញ្ហា", "nameEn": "Problem Solving", "max": 15 }
+      ]
+    },
+    {
+      "nameKm": "វិទ្យាសាស្ត្រ", "nameEn": "Science", "mainMax": 30,
+      "subs": [
+        { "nameKm": "ភាវៈរស់", "nameEn": "Living Things", "max": 10 },
+        { "nameKm": "បរិស្ថាន", "nameEn": "Environment", "max": 10 },
+        { "nameKm": "វិទ្យាសាស្ត្រមូលដ្ឋាន", "nameEn": "Basic Science", "max": 10 }
+      ]
+    },
+    {
+      "nameKm": "សិក្សាសង្គម", "nameEn": "Social Studies", "mainMax": 30,
+      "subs": [
+        { "nameKm": "ប្រវត្តិវិទ្យា", "nameEn": "History", "max": 10 },
+        { "nameKm": "ភូមិសាស្ត្រ", "nameEn": "Geography", "max": 10 },
+        { "nameKm": "ពលរដ្ឋវិជ្ជា", "nameEn": "Civics", "max": 10 }
+      ]
+    },
+    {
+      "nameKm": "សីលធម៌", "nameEn": "Moral Education", "mainMax": 20,
+      "subs": [
+        { "nameKm": "ចំណេះដឹងសីលធម៌", "nameEn": "Moral Knowledge", "max": 10 },
+        { "nameKm": "ឥរិយាបថល្អ", "nameEn": "Good Behaviour", "max": 10 }
+      ]
+    },
+    {
+      "nameKm": "អប់រំកាយ", "nameEn": "Physical Education", "mainMax": 20,
+      "subs": [
+        { "nameKm": "សកម្មភាពកាយសម្បទា", "nameEn": "Physical Activities", "max": 20 }
+      ]
+    },
+    {
+      "nameKm": "សិល្បៈ", "nameEn": "Art", "mainMax": 20,
+      "subs": [
+        { "nameKm": "គំនូរ និងការលាបពណ៌", "nameEn": "Drawing & Painting", "max": 20 }
+      ]
+    }
+  ]
+}

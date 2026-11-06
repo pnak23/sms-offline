@@ -48,7 +48,7 @@ try {
     keys: Object.keys(window.desktop ?? {}).sort(),
     require: typeof window.require, process: typeof window.process, ipc: typeof window.ipcRenderer, electron: typeof window.electron,
   }));
-  check('1b preload exposes only the documented desktop API', JSON.stringify(surface.keys) === JSON.stringify(['getInfo', 'health', 'metrics', 'onBackendStatus', 'openLogsFolder', 'printCurrentPage', 'printers', 'quit', 'restartBackend', 'saveFile', 'savePdfOfCurrentPage']), surface.keys.join(','));
+  check('1b preload exposes only the documented desktop API', JSON.stringify(surface.keys) === JSON.stringify(['backup', 'cancelClose', 'config', 'getInfo', 'health', 'metrics', 'onBackendStatus', 'onCloseRequested', 'onClosing', 'openBackupsFolder', 'openLogsFolder', 'printCurrentPage', 'printers', 'quit', 'relaunch', 'restartBackend', 'saveFile', 'savePdfOfCurrentPage']), surface.keys.join(','));
   check('1c no Node/Electron globals leak into the page (require/process/ipcRenderer)', surface.require === 'undefined' && surface.process === 'undefined' && surface.ipc === 'undefined' && surface.electron === 'undefined', JSON.stringify(surface));
 
   const info = await page.evaluate(() => window.desktop.getInfo());

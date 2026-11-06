@@ -1,4 +1,5 @@
-/* Application shell. Designed for 1366x768 and 1280x720 CSS px; the desktop window never goes below 1200x650. */
+/* Application shell. Designed for 1366x768 and 1280x720 CSS px and every smaller logical workspace of a laptop at 125 % or 150 % Windows scaling; the desktop window never goes below 880x440
+   (desktop/src/main/windowSize.ts). Ordinary pages must not need a sideways scroll bar above that: a narrow window collapses the sidebar (layouts/default.vue) and tables scroll inside their frame. */
 
 html,
 body,
@@ -8,8 +9,8 @@ body,
 
 body {
   overflow: hidden;
-  min-width: 1200px;
-  min-height: 650px;
+  min-width: 860px;
+  min-height: 420px;
 }
 
 html {
@@ -21,7 +22,7 @@ html {
   display: grid;
   grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
   height: 100vh;
-  min-height: 650px;
+  min-height: 420px;
 }
 
 .app-shell.is-collapsed {
@@ -63,9 +64,14 @@ html {
   padding: 1.5rem 1.75rem 2rem;
 }
 
+/* Content fills the window beside the sidebar (it used to stop at 1100 px and float in the middle of a wide screen).
+   Pages that are mostly a form keep a readable line length, but start at the left under the title instead of floating. */
 .page-container {
-  max-width: 1100px;
-  margin: 0 auto;
+  width: 100%;
+}
+
+.page-container.is-form {
+  max-width: 960px;
 }
 
 .page-container.is-narrow {
@@ -75,7 +81,7 @@ html {
 /* Auth layout: a centred card; the area scrolls if the content is taller than the window */
 .auth-shell {
   height: 100vh;
-  min-height: 650px;
+  min-height: 420px;
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;

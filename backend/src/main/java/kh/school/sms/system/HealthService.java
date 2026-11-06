@@ -1,5 +1,8 @@
 package kh.school.sms.system;
 
+import kh.school.sms.backup.BackupException;
+import kh.school.sms.backup.BackupService;
+import kh.school.sms.backup.BackupStore;
 import kh.school.sms.bootstrap.DataDirs;
 import kh.school.sms.bootstrap.StartupState;
 import kh.school.sms.settings.AppSettingsService;
@@ -12,14 +15,15 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Clock;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -42,12 +46,14 @@ public class HealthService {
     private final JdbcTemplate jdbc;
     private final Flyway flyway;
     private final AppSettingsService settings;
+    private final BackupService backups;
     private final Clock clock;
 
-    public HealthService(JdbcTemplate jdbc, Flyway flyway, AppSettingsService settings, Clock clock) {
+    public HealthService(JdbcTemplate jdbc, Flyway flyway, AppSettingsService settings, BackupService backups, Clock clock) {
         this.jdbc = jdbc;
         this.flyway = flyway;
         this.settings = settings;
+        this.backups = backups;
         this.clock = clock;
     }
 
@@ -59,6 +65,8 @@ public class HealthService {
         run(c, "SCHEMA_VERSION", this::schemaVersion);
         run(c, "DIRTY_SHUTDOWN", this::dirtyShutdown);
         run(c, "BACKUP_AGE", this::backupAge);
+        run(c, "EXTERNAL_COPY", this::externalCopy);
+        run(c, "BACKUP_SPACE", this::backupSpace);
         run(c, "MEMORY", this::memory);
         run(c, "CLOCK_SANITY", this::clockSanity);
         run(c, "ACADEMIC_YEAR_CURRENT", this::academicYear);
@@ -71,6 +79,7 @@ public class HealthService {
         List<Check> c = new ArrayList<>(quick().checks());
         run(c, "DB_INTEGRITY", this::integrity);
         run(c, "UPLOADS_CONSISTENCY", this::uploads);
+        run(c, "BACKUP_VERIFY", this::backupVerify);
         return report(c);
     }
 
@@ -141,21 +150,57 @@ public class HealthService {
         return Result.of("WARN", "PREVIOUS_SHUTDOWN_NOT_CLEAN", Map.of());
     }
 
+    /**
+     * The backups kept on this laptop are the school's primary protection (the owner's policy of 2026-11-05), so this is the check the dashboard shows: a warning when there is no good
+     * backup at all, or when the newest good one is 24 hours old or more (a normal close of the program makes one; so does "back up now").
+     */
     private Result backupAge() {
-        Instant newest = null;
-        try (DirectoryStream<Path> s = Files.newDirectoryStream(DataDirs.backups(), "SchoolBackup_*.zip")) {
-            for (Path p : s) {
-                Instant m = Files.getLastModifiedTime(p).toInstant();
-                if (newest == null || m.isAfter(newest)) newest = m;
-            }
-        } catch (IOException e) {
+        BackupStore.LocalStatus s;
+        try {
+            s = backups.localStatus();
+        } catch (BackupException e) {
             return Result.of("WARN", "BACKUP_FOLDER_UNREADABLE", Map.of());
         }
-        if (newest == null) return Result.of("INFO", "NO_BACKUP_YET", Map.of());
-        long days = Duration.between(newest, Instant.now(clock)).toDays();
-        int limit = Integer.parseInt(settings.allPublic().get("backup.reminderDays"));
-        Map<String, Object> p = Map.of("days", days, "reminderDays", limit);
-        return days > limit ? Result.of("WARN", "BACKUP_OVERDUE", p) : Result.ok(p);
+        return switch (s.state()) {
+            case NONE -> Result.of("WARN", "NO_SUCCESSFUL_BACKUP", Map.of());
+            case OLD -> Result.of("WARN", "BACKUP_OLD", Map.of("hours", s.ageHours(), "lastAt", s.lastGoodAt()));
+            case OK -> Result.ok(Map.of("hours", s.ageHours(), "lastAt", s.lastGoodAt()));
+        };
+    }
+
+    /**
+     * A copy somewhere ELSE (a USB stick) is OPTIONAL: a backup on the same disk does not survive the disk, a stolen laptop or physical damage, but the school may choose not to copy.
+     * It is only a warning when the school switched its reminder on (backup.reminderDays above 0) and the copy is older than that.
+     */
+    private Result externalCopy() {
+        BackupStore.Reminder r;
+        try {
+            r = backups.reminder();
+        } catch (BackupException e) {
+            return Result.of("WARN", "BACKUP_FOLDER_UNREADABLE", Map.of());
+        }
+        if (!r.anyBackup()) return Result.of("INFO", "NO_BACKUP_YET", Map.of());
+        Map<String, Object> p = Map.of("days", r.days(), "reminderDays", r.reminderDays());
+        boolean overdue = r.overdue();
+        if (r.never()) return Result.of(overdue ? "WARN" : "INFO", "EXTERNAL_COPY_NEVER", p);   // backups exist, none copied to a USB stick yet
+        return overdue ? Result.of("WARN", "BACKUP_OVERDUE", p) : Result.ok(p);
+    }
+
+    /** Room for the next backup: a backup that cannot be written is found out now, not on the day it is needed. */
+    private Result backupSpace() {
+        long free = backups.freeBytes();
+        if (free == Long.MAX_VALUE) return Result.of("INFO", "BACKUP_SPACE_UNKNOWN", Map.of());
+        long needMb = backups.requiredBytes() >> 20;
+        Map<String, Object> p = Map.of("freeMb", free >> 20, "neededMb", needMb);
+        return free < backups.requiredBytes() ? Result.of("WARN", "BACKUP_SPACE_LOW", p) : Result.ok(p);
+    }
+
+    /** Re-reads the newest backup from the start (hashes, database integrity): a backup nobody has tried to open is only a hope. */
+    private Result backupVerify() {
+        Optional<BackupService.BackupView> newest = backups.newest();
+        if (newest.isEmpty()) return Result.of("INFO", "NO_BACKUP_YET", Map.of());
+        BackupService.BackupView v = backups.verify(newest.get().id());
+        return v.verifyError() == null ? Result.ok(Map.of("createdAt", v.createdAt())) : Result.of("FAIL", "BACKUP_DAMAGED", Map.of("reason", v.verifyError()));
     }
 
     private Result memory() {
@@ -211,13 +256,25 @@ public class HealthService {
 
     private Result uploads() {
         String logo = jdbc.queryForObject("select logo_file from school_settings where id = 1", String.class);   // NULL when no logo
-        int orphans = 0;
-        try (DirectoryStream<Path> s = Files.newDirectoryStream(DataDirs.schoolUploads())) {
-            for (Path p : s) if (!p.getFileName().toString().equals(logo)) orphans++;
+        Set<String> photos = new HashSet<>(jdbc.queryForList("select photo_file from students where photo_file is not null", String.class));
+        int orphans;
+        try {
+            orphans = orphanCount(DataDirs.schoolUploads(), logo == null ? Set.of() : Set.of(logo)) + orphanCount(DataDirs.studentUploads(), photos);
         } catch (IOException e) {
             return Result.of("WARN", "UPLOADS_UNREADABLE", Map.of());
         }
         if (logo != null && !Files.isRegularFile(DataDirs.schoolUploads().resolve(logo))) return Result.of("WARN", "LOGO_FILE_MISSING", Map.of());
+        long missingPhotos = photos.stream().filter(p -> !Files.isRegularFile(DataDirs.studentUploads().resolve(p))).count();
+        if (missingPhotos > 0) return Result.of("WARN", "STUDENT_PHOTO_MISSING", Map.of("count", missingPhotos));
         return orphans > 0 ? Result.of("WARN", "ORPHAN_UPLOADS", Map.of("count", orphans)) : Result.ok(Map.of());
+    }
+
+    /** Files in {@code dir} that no database row refers to. */
+    private static int orphanCount(Path dir, Set<String> referenced) throws IOException {
+        int n = 0;
+        try (DirectoryStream<Path> s = Files.newDirectoryStream(dir)) {
+            for (Path p : s) if (!referenced.contains(p.getFileName().toString())) n++;
+        }
+        return n;
     }
 }

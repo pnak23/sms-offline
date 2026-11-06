@@ -40,8 +40,8 @@ public class InternalController {
 
     /** Windows has no SIGTERM, so Electron asks nicely here first (closes the pool => WAL checkpoint). */
     @PostMapping("/shutdown")
-    public ResponseEntity<Map<String, String>> shutdown() {
-        shutdown.requestShutdown();
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(Map.of("status", "SHUTTING_DOWN"));
+    public ResponseEntity<Map<String, Object>> shutdown() {
+        boolean backingUp = shutdown.requestShutdown();   // an automatic backup runs first when one is due: Electron then waits longer
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(Map.of("status", "SHUTTING_DOWN", "backingUp", backingUp));
     }
 }

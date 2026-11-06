@@ -1,9 +1,9 @@
 {
   "name": "desktop",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
-  "description": "Offline Khmer primary school management system",
-  "author": "School Management",
+  "description": "Khmer Primary School Management System",
+  "author": "PHEA NAK",
   "main": "dist/main.cjs",
   "scripts": {
     "build": "node scripts/build.mjs",

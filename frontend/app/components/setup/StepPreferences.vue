@@ -5,8 +5,10 @@ import { IDLE_LOCK_RANGE, preferencesSchema, REMINDER_DAYS_RANGE } from '~/schem
 import { usePreferencesStore } from '~/stores/preferences';
 import { khmerDigitsToAscii, parseWholeNumber } from '~/utils/khmer';
 
-// Wizard step 6 and the preferences block of Settings: backup reminder interval and idle-lock minutes.
-const emit = defineEmits<{ next: []; back: [] }>();
+// Wizard step 6 and Settings -> Preferences (`standalone`: no wizard buttons, a Save button, emits `saved`):
+// the optional reminder to copy a backup to a USB stick (off by default) and idle-lock minutes. Backups themselves are kept on this laptop and made by the program.
+const props = defineProps<{ standalone?: boolean }>();
+const emit = defineEmits<{ next: []; back: []; saved: [] }>();
 
 const { t } = useI18n();
 const { messageFor } = useApiError();
@@ -14,7 +16,7 @@ const preferences = usePreferencesStore();
 
 const { handleSubmit, setErrors, resetForm } = useForm({
   validationSchema: toTypedSchema(preferencesSchema),
-  initialValues: { reminderDays: '7', idleLockMinutes: '10' },
+  initialValues: { reminderDays: '0', idleLockMinutes: '10' },
 });
 // The server reports bad values under the setting keys (INVALID_SETTING).
 const submit = useSubmit({
@@ -47,7 +49,9 @@ const onSubmit = handleSubmit(async (form) => {
     });
     return true;
   });
-  if (ok) emit('next');
+  if (!ok) return;
+  if (props.standalone) emit('saved');
+  else emit('next');
 });
 
 const asciiDigits = (text: string, caret: number) => ({ value: khmerDigitsToAscii(text), caret });
@@ -58,7 +62,7 @@ onMounted(load);
 <template>
   <StateBlock :loading="loading" :error="loadError" @retry="load">
     <form novalidate @submit.prevent="onSubmit">
-      <p class="text-muted">{{ t('setup.preferences.intro') }}</p>
+      <p v-if="!standalone" class="text-muted">{{ t('setup.preferences.intro') }}</p>
       <FormAlert :message="submit.formError.value" />
 
       <div class="row">
@@ -85,15 +89,12 @@ onMounted(load);
         </div>
       </div>
 
-      <div class="mb-3">
-        <label class="form-label">{{ t('setup.preferences.backupFolder') }}</label>
-        <div class="d-flex align-items-center gap-3 flex-wrap">
-          <button type="button" class="btn btn-outline-secondary" disabled><AppIcon name="folder2-open" />{{ t('setup.preferences.chooseFolder') }}</button>
-          <span class="text-muted small">{{ t('setup.preferences.chooseLater') }}</span>
-        </div>
-      </div>
+      <p class="text-muted small" data-testid="backup-where">{{ t('setup.preferences.backupWhere') }}</p>
 
-      <div class="wizard-actions">
+      <div v-if="standalone">
+        <LoadingButton type="submit" icon="check-lg" :loading="submit.submitting.value">{{ t('common.save') }}</LoadingButton>
+      </div>
+      <div v-else class="wizard-actions">
         <button type="button" class="btn btn-outline-secondary" @click="emit('back')"><AppIcon name="arrow-left" />{{ t('common.back') }}</button>
         <LoadingButton type="submit" icon="arrow-right" :loading="submit.submitting.value">{{ t('common.saveAndContinue') }}</LoadingButton>
       </div>

@@ -25,8 +25,16 @@ public class AuditService {
     }
 
     public void record(String action, String entityType, Long entityId, String summary) {
-        jdbc.update("INSERT INTO audit_logs (at, actor, action, entity_type, entity_id, summary) VALUES (?, ?, ?, ?, ?, ?)",
-                Instant.now(clock).toString(), actor(), action, entityType, entityId, summary);
+        record(action, entityType, entityId, summary, null, null);
+    }
+
+    /**
+     * A correction keeps what it replaced: {@code beforeJson} / {@code afterJson} hold codes and numbers only (a status, a
+     * score), never names or free text, so the trail stays free of personal data.
+     */
+    public void record(String action, String entityType, Long entityId, String summary, String beforeJson, String afterJson) {
+        jdbc.update("INSERT INTO audit_logs (at, actor, action, entity_type, entity_id, summary, before_json, after_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                Instant.now(clock).toString(), actor(), action, entityType, entityId, summary, beforeJson, afterJson);
     }
 
     private static String actor() {

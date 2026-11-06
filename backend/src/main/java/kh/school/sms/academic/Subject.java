@@ -30,6 +30,10 @@ public class Subject {
     @Column(name = "sort_order", nullable = false)
     private int sortOrder;
 
+    /** NULL = a main subject; otherwise the main subject this sub-subject belongs to (two levels only, V8). */
+    @Column(name = "parent_id")
+    private Long parentId;
+
     @Convert(converter = Converters.BooleanInt.class)
     @Column(name = "is_active", nullable = false)
     private boolean active = true;
@@ -47,11 +51,18 @@ public class Subject {
 
     public Long getId() { return id; }
     public String getCode() { return code; }
+    public void setCode(String v) { this.code = v; }
     public String getNameKm() { return nameKm; }
+    public void setNameKm(String v) { this.nameKm = v; }
     public String getNameEn() { return nameEn; }
+    public void setNameEn(String v) { this.nameEn = v; }
     public int getSortOrder() { return sortOrder; }
+    public void setSortOrder(int v) { this.sortOrder = v; }
+    public Long getParentId() { return parentId; }
+    public void setParentId(Long v) { this.parentId = v; }
     public boolean isActive() { return active; }
     public void setActive(boolean v) { this.active = v; }
     public long getVersion() { return version; }
+    public void setCreatedAt(Instant v) { this.createdAt = v; }
     public void setUpdatedAt(Instant v) { this.updatedAt = v; }
 }

@@ -73,6 +73,12 @@ export class HttpClient {
     return response.blob();
   }
 
+  /** A POST whose answer is a file (the Excel export): the JSON body goes out, the bytes come back. */
+  async postBlob(path: string, body?: unknown, options?: RequestOptions): Promise<Blob> {
+    const response = await this.send('POST', path, { ...options, body });
+    return response.blob();
+  }
+
   private async json<T>(method: Method, path: string, options?: RequestOptions): Promise<T> {
     const response = await this.send(method, path, options);
     if (response.status === 204) return undefined as T;
@@ -128,8 +134,16 @@ export class HttpClient {
       Array.isArray(problem.fieldErrors) ? problem.fieldErrors : [],
       retry,
       typeof problem.detail === 'string' ? problem.detail : undefined,
+      extraFields(problem),
     );
   }
+}
+
+const KNOWN_PROBLEM_FIELDS = new Set(['status', 'code', 'fieldErrors', 'retryAfterSeconds', 'detail', 'title', 'type', 'instance']);
+
+/** The fields of a problem body that the client has no named slot for (e.g. `studentCode` of a POSSIBLE_DUPLICATE). */
+function extraFields(problem: ProblemBody): Record<string, unknown> {
+  return Object.fromEntries(Object.entries(problem).filter(([key]) => !KNOWN_PROBLEM_FIELDS.has(key)));
 }
 
 /** The app-wide client; configured once at start-up by plugins/api.ts. */

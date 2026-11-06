@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { academicYearSchema } from '~/schemas/academic';
+import { academicYearSchema, subjectSchema } from '~/schemas/academic';
 import { adminSchema, createChangePasswordSchema, loginSchema, recoverSchema } from '~/schemas/auth';
 import { preferencesSchema } from '~/schemas/preferences';
 import { schoolSchema } from '~/schemas/school';
@@ -92,10 +92,18 @@ describe('school, academic year and preferences forms', () => {
   it('preferences: whole numbers in range, Khmer digits accepted', () => {
     expect(issues(preferencesSchema, { reminderDays: '7', idleLockMinutes: '10' })).toEqual({});
     expect(issues(preferencesSchema, { reminderDays: '១៥', idleLockMinutes: '១២០' })).toEqual({});
-    expect(issues(preferencesSchema, { reminderDays: '0', idleLockMinutes: '121' })).toEqual({ reminderDays: 'OUT_OF_RANGE', idleLockMinutes: 'OUT_OF_RANGE' });
+    expect(issues(preferencesSchema, { reminderDays: '0', idleLockMinutes: '121' })).toEqual({ idleLockMinutes: 'OUT_OF_RANGE' });   // 0 = no reminder to copy a backup to a USB stick
+    expect(issues(preferencesSchema, { reminderDays: '-1', idleLockMinutes: '3' }).reminderDays).toBeTruthy();
     expect(issues(preferencesSchema, { reminderDays: '91', idleLockMinutes: '3' }).reminderDays).toBe('OUT_OF_RANGE');
     expect(issues(preferencesSchema, { reminderDays: '1.5', idleLockMinutes: 'abc' })).toEqual({ reminderDays: 'INVALID_NUMBER', idleLockMinutes: 'INVALID_NUMBER' });
     expect(issues(preferencesSchema, { reminderDays: '', idleLockMinutes: '1' }).reminderDays).toBe('REQUIRED');
+  });
+
+  it('subject: the Khmer name is required, the English name optional, both at most 100 characters', () => {
+    expect(issues(subjectSchema, { nameKm: 'កុំព្យូទ័រ', nameEn: '' })).toEqual({});
+    expect(issues(subjectSchema, { nameKm: '  កុំព្យូទ័រ ', nameEn: 'Computer' })).toEqual({});
+    expect(issues(subjectSchema, { nameKm: '   ', nameEn: '' })).toEqual({ nameKm: 'REQUIRED' });
+    expect(issues(subjectSchema, { nameKm: 'ក'.repeat(101), nameEn: 'x'.repeat(101) })).toEqual({ nameKm: 'Size', nameEn: 'Size' });
   });
 });
 

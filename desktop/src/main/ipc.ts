@@ -6,9 +6,12 @@ import path from 'node:path';
 import { z } from 'zod';
 import { CH } from '../shared/channels';
 import type { BackendManager } from './backend';
+import { BACKUP_ID, copyVerified, findBackupFile, isSameOrInside, sameDrive, stageIncoming } from './backups';
+import { ConfigPatchSchema, loadConfig, updateConfig, viewConfig } from './config';
 import { log } from './log';
 import type { Paths } from './paths';
 import { safeFileName } from './filename';
+import { product } from './product';
 import { isTrustedUrl } from './security';
 
 interface Deps {
@@ -16,6 +19,8 @@ interface Deps {
   paths: Paths;
   devUrl?: string;
   mainWindow: () => BrowserWindow | null;
+  /** The page answered the "close requested" question with "stay". */
+  onCancelClose: () => void;
 }
 
 const MAX_FILE_BYTES = 50 * 1024 * 1024;
@@ -27,6 +32,7 @@ const FileArgs = z.object({
   defaultName: z.string().min(1).max(120),
   bytes: z.custom<ArrayBuffer | Uint8Array>((v) => v instanceof ArrayBuffer || ArrayBuffer.isView(v), 'bytes must be binary'),
 }).strict();
+const BackupIdArgs = z.object({ id: z.string().regex(BACKUP_ID) }).strict();
 const Diag = z.unknown().refine((v) => JSON.stringify(v ?? null).length < 1_000_000, 'report too large');
 
 /** Electron's PrinterInfo has no default-printer flag, so ask Windows once (cached for the session; it rarely changes). */
@@ -54,7 +60,7 @@ export function registerIpc(d: Deps): void {
 
   secure(CH.getInfo, undefined, () => {
     if (d.backend.state !== 'ready') throw new Error('BACKEND_NOT_READY');
-    return { version: app.getVersion(), backendBaseUrl: d.backend.baseUrl() };
+    return { version: app.getVersion(), electron: process.versions.electron, chromium: process.versions.chrome, node: process.versions.node, backendBaseUrl: d.backend.baseUrl() };
   });
   secure(CH.restartBackend, undefined, async () => { await d.backend.restart(); });
 
@@ -105,8 +111,8 @@ export function registerIpc(d: Deps): void {
     if (res.canceled || !res.filePath) return { saved: false };
     const tail = (f: string) => existsSync(f) ? readFileSync(f, 'utf8').split(/\r?\n/).slice(-300).join('\n') : '(missing)';
     const text = [
-      '# School Management — diagnostics (no personal data is included)',
-      `app ${app.getVersion()} | electron ${process.versions.electron} | chromium ${process.versions.chrome} | node ${process.versions.node}`,
+      `# ${product.name} — diagnostics (no personal data is included)`,
+      `${product.shortName} ${product.version} (${product.channel}) | app ${app.getVersion()} | electron ${process.versions.electron} | chromium ${process.versions.chrome} | node ${process.versions.node}`,
       `os ${os.type()} ${os.release()} ${os.arch()} | ram ${Math.round(os.totalmem() / 1048576)} MB | cpus ${os.cpus().length}`,
       `backend ${JSON.stringify(d.backend.status())}`,
       '', '## health report (from the renderer)', JSON.stringify(report, null, 2),
@@ -118,7 +124,46 @@ export function registerIpc(d: Deps): void {
   });
 
   secure(CH.openLogs, undefined, async () => { await shell.openPath(d.paths.logsDir); });
+  secure(CH.openBackups, undefined, async () => { await shell.openPath(path.join(d.paths.dataDir, 'backups')); });
   secure(CH.quit, undefined, () => { app.quit(); });
+  secure(CH.cancelClose, undefined, () => { d.onCancelClose(); });
+  // A setting applies at the next start; relaunch restarts the whole program (the backend closes cleanly first, see before-quit).
+  secure(CH.relaunch, undefined, () => { app.relaunch(); app.quit(); });
+
+  secure(CH.configGet, undefined, () => viewConfig(loadConfig(d.paths.configDir)));
+  secure(CH.configUpdate, ConfigPatchSchema, (patch) => {
+    const view = updateConfig(d.paths.configDir, patch);
+    log.info(`settings changed: preset=${view.preset} disableGpu=${view.disableGpu}`);
+    return view;
+  });
+
+  // Copy a backup to a USB stick or another folder the user picks, then prove the copy (hash of the copy == hash of the original).
+  let lastFolder: string | null = null;
+  secure(CH.backupCopy, BackupIdArgs, async (a, e) => {
+    const source = findBackupFile(d.paths.dataDir, a.id);
+    if (!source) return { copied: false, reason: 'NOT_FOUND' };
+    const win = BrowserWindow.fromWebContents(e.sender);
+    const res = await dialog.showOpenDialog(win!, { properties: ['openDirectory', 'createDirectory'], defaultPath: lastFolder ?? app.getPath('documents') });
+    const folder = res.filePaths[0];
+    if (res.canceled || !folder) return { copied: false, reason: 'CANCELLED' };
+    if (isSameOrInside(d.paths.dataDir, folder)) return { copied: false, reason: 'SAME_FOLDER' };   // inside the program's own data is not a copy elsewhere
+    const result = await copyVerified(source, folder);
+    if (!result.copied) { log.warn(`copying a backup to a folder failed: ${result.reason}`); return { copied: false, reason: result.reason }; }
+    lastFolder = folder;
+    log.info('a backup was copied to another place and verified');
+    return { copied: true, sha256: result.sha256, folderName: path.basename(folder) || folder, sameDrive: sameDrive(d.paths.dataDir, folder) };
+  });
+
+  // Choose a backup zip to restore (from a USB stick, say). It is only copied into backups/incoming/; the backend checks it fully.
+  secure(CH.backupPick, undefined, async (_a, e) => {
+    const win = BrowserWindow.fromWebContents(e.sender);
+    const res = await dialog.showOpenDialog(win!, { properties: ['openFile'], filters: [{ name: 'ZIP', extensions: ['zip'] }], defaultPath: lastFolder ?? app.getPath('documents') });
+    const chosen = res.filePaths[0];
+    if (res.canceled || !chosen) return { picked: false, reason: 'CANCELLED' };
+    const staged = await stageIncoming(d.paths.dataDir, chosen);
+    if (!staged.picked) log.warn(`a file chosen for restoring was refused: ${staged.reason}`);
+    return staged;
+  });
 }
 
 /** Start-up error window: three fixed actions, valid only from that window. */

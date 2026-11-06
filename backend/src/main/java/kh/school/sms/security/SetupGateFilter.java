@@ -35,6 +35,8 @@ public class SetupGateFilter extends OncePerRequestFilter {
                 || p.startsWith("/internal/")
                 || p.equals("/api/v1/auth/status")
                 || p.equals("/api/v1/auth/setup")
-                || p.equals("/api/v1/system/health");
+                || p.equals("/api/v1/system/health")
+                || p.equals("/api/v1/system/about")   // who the program is: shown on the sign-in screen, which exists before any account
+                || p.equals("/api/v1/backups/restore") || p.startsWith("/api/v1/backups/restore/");   // a new PC restores before it has an account
     }
 }

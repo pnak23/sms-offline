@@ -1,0 +1,19 @@
+{
+  "format": 1,
+  "note": "What is still pending before the school accepts the system. Mirrors docs/FINAL-SCHOOL-ACCEPTANCE.md. This file may only use the 'development' and 'pending' values below; 'Final school acceptance completed' is never written here: it is recorded in the database by the school's administrator (Settings > About).",
+  "items": [
+    { "id": "attendance-sessions", "group": "information", "development": "COMPLETED", "pending": "CONFIGURATION" },
+    { "id": "attendance-counting", "group": "information", "development": "COMPLETED", "pending": "CONFIGURATION" },
+    { "id": "timetable-slots", "group": "information", "development": "COMPLETED", "pending": "CONFIGURATION" },
+    { "id": "grading-rules", "group": "information", "development": "COMPLETED", "pending": "OFFICIAL_INFORMATION" },
+    { "id": "report-card-template", "group": "information", "development": "COMPLETED", "pending": "OFFICIAL_INFORMATION" },
+    { "id": "fee-currency", "group": "information", "development": "COMPLETED", "pending": "CONFIGURATION" },
+    { "id": "national-header", "group": "information", "development": "COMPLETED", "pending": "OFFICIAL_INFORMATION" },
+    { "id": "khmer-wording", "group": "information", "development": "COMPLETED", "pending": "OFFICIAL_INFORMATION" },
+    { "id": "usb-backup", "group": "hardware", "development": "COMPLETED", "pending": "PHYSICAL_TESTING" },
+    { "id": "windows-compatibility", "group": "hardware", "development": "COMPLETED", "pending": "PHYSICAL_TESTING" },
+    { "id": "clean-pc-install", "group": "hardware", "development": "COMPLETED", "pending": "PHYSICAL_TESTING" },
+    { "id": "physical-printing", "group": "hardware", "development": "COMPLETED", "pending": "PHYSICAL_TESTING" },
+    { "id": "other-real-world-checks", "group": "hardware", "development": "COMPLETED", "pending": "PHYSICAL_TESTING" }
+  ]
+}

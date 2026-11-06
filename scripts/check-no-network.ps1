@@ -1,7 +1,7 @@
 # Does the packaged app talk to anything but itself? Starts it, then for N seconds samples every TCP connection and UDP endpoint
 # owned by its processes (Electron + children + bundled java.exe) and diffs the Windows DNS cache.
-# Usage: powershell -NoProfile -File scripts\check-no-network.ps1 [-Exe path\SchoolManagement.exe] [-Seconds 60]
-param([string]$Exe = (Join-Path $PSScriptRoot '..\desktop\release\win-unpacked\SchoolManagement.exe'), [int]$Seconds = 60)
+# Usage: powershell -NoProfile -File scripts\check-no-network.ps1 [-Exe path\<short name>.exe] [-Seconds 60]
+param([string]$Exe = (Join-Path $PSScriptRoot ('..\desktop\release\win-unpacked\' + (Get-Content (Join-Path $PSScriptRoot '..\release\release.json') -Raw -Encoding UTF8 | ConvertFrom-Json).shortName + '.exe')), [int]$Seconds = 60)
 $Exe = (Resolve-Path $Exe).Path
 $appDir = (Split-Path $Exe).ToLower()
 $data = Join-Path $env:TEMP ('sms-net-' + [guid]::NewGuid().ToString('N').Substring(0, 8)); New-Item -ItemType Directory $data | Out-Null

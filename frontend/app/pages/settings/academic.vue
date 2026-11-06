@@ -6,7 +6,7 @@ const { t } = useI18n();
   <div class="page-container">
     <PageHeader :title="t('academic.title')" :subtitle="t('academic.subtitle')" />
     <div class="card">
-      <div class="card-body"><AcademicSetup /></div>
+      <div class="card-body"><AcademicSetup manage /></div>
     </div>
   </div>
 </template>

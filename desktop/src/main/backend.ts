@@ -15,6 +15,8 @@ export interface BackendStatus { state: BackendState; code?: string }
 
 const START_TIMEOUT_MS = 90_000;
 const SHUTDOWN_TIMEOUT_MS = 10_000;
+/** An automatic backup runs first when the program closes and the newest backup is a day old: a few seconds for a school, never minutes. */
+const SHUTDOWN_WITH_BACKUP_TIMEOUT_MS = 180_000;
 
 /**
  * Owns the Spring Boot child process (docs §4.2–4.4). The launch secret and data dir travel in the ENVIRONMENT (argv is
@@ -150,10 +152,14 @@ export class BackendManager extends EventEmitter {
     const child = this.child;
     if (this.external || !child || child.exitCode !== null) { this.child = null; this.set('stopped'); return; }
     const exited = new Promise<void>((r) => child.once('exit', () => r()));
+    let backingUp = false;
     try {
-      await fetch(`${this.baseUrl()}/internal/shutdown`, { method: 'POST', headers: { 'X-SMS-Launch-Secret': this.secret }, signal: AbortSignal.timeout(2000) });
+      const r = await fetch(`${this.baseUrl()}/internal/shutdown`, { method: 'POST', headers: { 'X-SMS-Launch-Secret': this.secret }, signal: AbortSignal.timeout(2000) });
+      backingUp = ((await r.json()) as { backingUp?: boolean }).backingUp === true;
     } catch { /* fall through to the timeout / kill */ }
-    const graceful = await Promise.race([exited.then(() => true), new Promise<boolean>((r) => setTimeout(() => r(false), SHUTDOWN_TIMEOUT_MS))]);
+    if (backingUp) { log.info('a backup is being made before the program closes'); this.emit('saving'); }
+    const wait = backingUp ? SHUTDOWN_WITH_BACKUP_TIMEOUT_MS : SHUTDOWN_TIMEOUT_MS;
+    const graceful = await Promise.race([exited.then(() => true), new Promise<boolean>((r) => setTimeout(() => r(false), wait))]);
     if (!graceful) { log.warn('backend did not exit in time, force-killing its process tree'); await this.kill(); }
     log.info(`backend stopped (${graceful ? 'graceful' : 'forced'})`);
     this.child = null;

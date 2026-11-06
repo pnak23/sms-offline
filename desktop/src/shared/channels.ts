@@ -10,7 +10,16 @@ export const CH = {
   exportDiagnostics: 'desktop:exportDiagnostics',
   openLogs: 'desktop:openLogs',
   quit: 'desktop:quit',
+  backupCopy: 'desktop:backupCopy',
+  backupPick: 'desktop:backupPick',
+  openBackups: 'desktop:openBackups',
+  configGet: 'desktop:configGet',
+  configUpdate: 'desktop:configUpdate',
+  relaunch: 'desktop:relaunch',
+  cancelClose: 'desktop:cancelClose',
   backendStatus: 'desktop:backendStatus',   // main -> renderer event
+  closeRequested: 'desktop:closeRequested', // main -> renderer event: the user closed the window; the page decides (exit prompt) and answers quit() or cancelClose()
+  closing: 'desktop:closing',               // main -> renderer event: a backup is being made while the program closes
   error: {
     getInfo: 'error:getInfo',
     retry: 'error:retry',

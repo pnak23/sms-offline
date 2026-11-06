@@ -46,6 +46,8 @@ function createDevDesktop(backend: string): DesktopApi {
   return {
     getInfo: () => Promise.resolve({ version: 'dev', backendBaseUrl: backend }),
     onBackendStatus: () => () => undefined,
+    onCloseRequested: () => () => undefined,
+    onClosing: () => () => undefined,
     restartBackend: () => unavailable('restartBackend'),
     printCurrentPage: () => {
       window.print();
@@ -56,8 +58,19 @@ function createDevDesktop(backend: string): DesktopApi {
     printers: { list: () => Promise.resolve([]) },
     metrics: { get: () => unavailable('metrics') },
     health: { exportDiagnostics: () => Promise.resolve({ saved: false }) },
+    backup: {
+      copyToFolder: () => Promise.resolve({ copied: false, reason: 'CANCELLED' }),
+      pickForRestore: () => Promise.resolve({ picked: false, reason: 'CANCELLED' }),
+    },
+    config: {
+      get: () => Promise.resolve({ preset: 'standard', disableGpu: false }),
+      update: (patch) => Promise.resolve({ preset: patch.preset ?? 'standard', disableGpu: patch.disableGpu ?? false }),
+    },
     openLogsFolder: () => Promise.resolve(),
+    openBackupsFolder: () => Promise.resolve(),
     quit: () => Promise.resolve(),
+    cancelClose: () => Promise.resolve(),
+    relaunch: () => unavailable('relaunch'),
   };
 }
 

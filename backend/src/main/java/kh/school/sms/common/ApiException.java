@@ -32,6 +32,15 @@ public class ApiException extends RuntimeException {
         return validation(List.of(new FieldError(field, code)));
     }
 
+    /** A value that must be unique already exists: 409 DUPLICATE, with the field named so a form can show it next to the input. */
+    public static ApiException duplicate(String field) {
+        return new ApiException(HttpStatus.CONFLICT, "DUPLICATE", List.of(new FieldError(field, "DUPLICATE")), Map.of());
+    }
+
+    public static ApiException notFound() { return new ApiException(HttpStatus.NOT_FOUND, "NOT_FOUND"); }
+
+    public static ApiException staleVersion() { return new ApiException(HttpStatus.CONFLICT, "OPTIMISTIC_LOCK"); }
+
     public HttpStatus status() { return status; }
     public String code() { return code; }
     public List<FieldError> fieldErrors() { return fieldErrors; }

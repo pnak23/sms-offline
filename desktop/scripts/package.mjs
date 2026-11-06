@@ -7,9 +7,14 @@ import { build, Platform } from 'electron-builder';
 import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
+import { readRelease, validateRelease } from '../../scripts/lib/version.mjs';
 
 const desktop = path.resolve(import.meta.dirname, '..');
 const root = path.resolve(desktop, '..');
+// The one authoritative identity and version (docs/RELEASE.md): a build never carries a name or version typed anywhere else.
+const release = readRelease(root);
+const releaseProblems = validateRelease(release);
+if (releaseProblems.length > 0) { console.error(releaseProblems.join('\n')); process.exit(1); }
 const target = process.argv[2] === 'dir' ? 'dir' : 'nsis';
 const stage = path.join(desktop, 'build', 'stage');
 
@@ -34,12 +39,14 @@ await build({
   publish: 'never',
   config: {
     appId: 'kh.school.sms',
-    productName: 'School Management',
-    executableName: 'SchoolManagement',
-    copyright: 'School Management',
+    productName: release.name,
+    executableName: release.shortName,
+    copyright: release.copyright,
     directories: { output: path.join(desktop, 'release'), buildResources: path.join(desktop, 'build') },
     // Per-user NSIS installs go to %LOCALAPPDATA%\Programs\<package name>; without this it would be the workspace name "desktop".
-    extraMetadata: { name: 'school-management' },
+    // (the version, author and description are written here too, so a stale desktop/package.json can never reach the installer)
+    // (author is an object on purpose: electron-builder takes the "Company" of the Windows file properties from author.name, and a plain string would leave Electron's own)
+    extraMetadata: { name: release.shortName.toLowerCase(), version: release.version, author: { name: release.developer }, description: release.name },
     asar: true,
     // Electron fuses are flipped inside the shipped exe and cannot be re-enabled at run time: the installed app ignores
     // ELECTRON_RUN_AS_NODE / NODE_OPTIONS / --inspect and only loads its code from the integrity-checked asar.
@@ -61,10 +68,10 @@ await build({
       allowToChangeInstallationDirectory: false,
       createDesktopShortcut: 'always',
       createStartMenuShortcut: true,
-      shortcutName: 'School Management',
+      shortcutName: release.shortName,
       runAfterFinish: true,
       deleteAppDataOnUninstall: false,             // user data lives in %LOCALAPPDATA%\RuralSchoolManagement and is never touched
-      artifactName: 'SchoolManagement-Setup-${version}.${ext}',
+      artifactName: `${release.shortName}-Setup-\${version}.\${ext}`,
     },
     compression: 'normal',
   },

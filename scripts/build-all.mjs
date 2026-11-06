@@ -22,6 +22,7 @@ const runNpm = (title, args) => {
   if (r.status !== 0) { console.error(`\nFAILED at: ${title}`); process.exit(r.status ?? 1); }
 };
 
+run('0/6 release metadata (version, identity, acceptance list)', node, ['scripts/version.mjs', 'check']);
 if (!skipTests) run('1/6 backend tests', node, ['scripts/run-mvn.mjs', 'test']);
 run('2/6 backend jar', node, ['scripts/run-mvn.mjs', '-q', 'package', '-DskipTests']);
 run('3/6 extract backend (fast-start layout)', node, ['scripts/extract-backend.mjs']);

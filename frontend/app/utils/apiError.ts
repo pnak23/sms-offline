@@ -8,6 +8,8 @@ export class ApiError extends Error {
     readonly fieldErrors: FieldError[] = [],
     readonly retryAfterSeconds?: number,
     readonly detail?: string,
+    /** Any other fields of the problem body, e.g. `studentCode` of a POSSIBLE_DUPLICATE. */
+    readonly extra: Record<string, unknown> = {},
   ) {
     super(code);
     this.name = 'ApiError';

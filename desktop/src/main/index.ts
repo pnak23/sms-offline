@@ -7,6 +7,7 @@ import { loadConfig } from './config';
 import { registerErrorIpc, registerIpc } from './ipc';
 import { initLog, log } from './log';
 import { resolvePaths } from './paths';
+import { product } from './product';
 import { registerAppScheme, serveApp } from './protocol';
 import { installSecurity } from './security';
 import { createErrorWindow, createMainWindow, createSplash } from './windows';
@@ -27,7 +28,7 @@ function start(): void {
   initLog(paths.logsDir);
   const config = loadConfig(paths.configDir);
   if (config.desktop.disableGpu) app.disableHardwareAcceleration();
-  log.info(`starting v${app.getVersion()} (packaged=${app.isPackaged}) data=${paths.dataDir}`);
+  log.info(`starting ${product.shortName} ${product.version} (${product.channel}) (packaged=${app.isPackaged}) data=${paths.dataDir}`);
 
   const backend = new BackendManager(paths, () => config);
   let mainWin: BrowserWindow | null = null;
@@ -38,8 +39,27 @@ function start(): void {
   let ready = false;
 
   backend.on('status', (s) => mainWin?.webContents.send(CH.backendStatus, s));
+  // an automatic backup is being made while the program closes: the page says so instead of looking frozen
+  backend.on('saving', () => mainWin?.webContents.send(CH.closing));
   // A restart normally keeps the port. If it had to change, the page's CSP and base URL are stale: reload the UI.
   backend.on('portChanged', () => mainWin?.webContents.reload());
+
+  // Closing the window asks the PAGE first: it may offer to copy the backup to a USB stick. The page answers quit() or cancelClose();
+  // if it does not answer (still loading, hung) the program closes anyway, so nobody is ever trapped behind a dead page.
+  const CLOSE_ANSWER_MS = 5000;
+  let closePending = false;
+  let closeTimer: NodeJS.Timeout | null = null;
+  function cancelClose(): void {
+    if (closeTimer) clearTimeout(closeTimer);
+    closeTimer = null;
+    closePending = false;
+  }
+  function askBeforeClosing(): void {
+    if (closePending) return;
+    closePending = true;
+    mainWin?.webContents.send(CH.closeRequested);
+    closeTimer = setTimeout(() => { closePending = false; log.warn('the page did not answer the close request, closing'); app.quit(); }, CLOSE_ANSWER_MS);
+  }
 
   async function boot(): Promise<void> {
     splash = createSplash();                            // created synchronously: the window count never drops to zero on retry
@@ -55,6 +75,11 @@ function start(): void {
     mainWin.once('ready-to-show', () => {
       splash?.close(); splash = null; mainWin?.show();
       log.info(`main window shown ${Math.round(process.uptime() * 1000)} ms after the process started`);
+    });
+    mainWin.on('close', (e) => {
+      if (quitting) return;
+      e.preventDefault();
+      askBeforeClosing();
     });
     mainWin.on('closed', () => { mainWin = null; });
   }
@@ -74,13 +99,14 @@ function start(): void {
   app.on('before-quit', (e) => {                        // graceful: stop the backend (WAL checkpoint) before exiting
     if (quitting) return;
     quitting = true;
+    cancelClose();
     e.preventDefault();
     void backend.stop().finally(() => app.exit(0));
   });
   process.on('uncaughtException', (err) => log.error(`uncaught exception: ${err.stack ?? err.message}`));
 
   void app.whenReady().then(() => {
-    registerIpc({ backend, paths, devUrl, mainWindow: () => mainWin });
+    registerIpc({ backend, paths, devUrl, mainWindow: () => mainWin, onCancelClose: cancelClose });
     registerErrorIpc({
       window: () => errorWin, code: () => failureCode, paths,
       retry: () => { void boot(); errorWin?.close(); },   // boot() opens the splash first, then the error window closes

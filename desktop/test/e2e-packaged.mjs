@@ -1,14 +1,16 @@
-// Runs the PACKAGED app (desktop/release/win-unpacked/SchoolManagement.exe) the way a user would: bundled JRE + backend + web
+// Runs the PACKAGED app (desktop/release/win-unpacked/<short name>.exe) the way a user would: bundled JRE + backend + web
 // from resources/, custom protocol, a data folder with a space and Khmer characters. Attaches over CDP only to look inside.
-// Usage: node desktop/test/e2e-packaged.mjs [path/to/SchoolManagement.exe]
+// Usage: node desktop/test/e2e-packaged.mjs [path/to/<short name>.exe]
 import { chromium } from 'playwright-core';
 import { spawn, execFileSync } from 'node:child_process';
 import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { latestSchemaVersion } from '../../scripts/lib/schema.mjs';
 
 const root = path.resolve(import.meta.dirname, '..', '..');
-const exe = path.resolve(process.argv[2] ?? path.join(root, 'desktop', 'release', 'win-unpacked', 'SchoolManagement.exe'));
+const release = JSON.parse(readFileSync(path.join(root, 'release', 'release.json'), 'utf8'));
+const exe = path.resolve(process.argv[2] ?? path.join(root, 'desktop', 'release', 'win-unpacked', `${release.shortName}.exe`));
 const data = mkdtempSync(path.join(tmpdir(), 'sms packaged ទិន្នន័យ '));
 const port = 9333;
 let failures = 0;
@@ -38,7 +40,7 @@ try {
   check('2 the UI is served from the bundled web/ folder over app://school/', !!page, page?.url());
   const info = await page.evaluate(() => window.desktop.getInfo());
   const health = await page.evaluate(async (b) => (await (await fetch(b + '/internal/health')).json()), info.backendBaseUrl);
-  check('3 backend healthy through the injected secret; schema version 2', health.status === 'UP' && health.schemaVersion === '2', JSON.stringify({ v: health.appVersion, startup: health.startup }));
+  check(`3 backend healthy through the injected secret; schema version ${latestSchemaVersion()}`, health.status === 'UP' && health.schemaVersion === latestSchemaVersion(), JSON.stringify({ v: health.appVersion, startup: health.startup }));
   const jreVersion = readFileSync(path.join(res, 'jre', 'release'), 'utf8').match(/JAVA_VERSION="([^"]+)"/)?.[1];
   console.log(`      bundled JRE: ${jreVersion}`);
   const m = await page.evaluate(() => window.desktop.metrics.get());

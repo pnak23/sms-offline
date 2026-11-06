@@ -12,6 +12,8 @@ frontend/.data/
 
 # local runtime data (never commit a real database or uploads)
 .dev-data/
+.sample-data/
+.sample-data.*/
 *.db
 *.db-wal
 *.db-shm

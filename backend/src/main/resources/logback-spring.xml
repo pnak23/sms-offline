@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Logging (Phase 5): backend.log rolls at 10 MB and keeps exactly five older files (backend.log.1 is the newest of them), so the logs
+  stay at about 60 MB. Boot's own rolling policy counts DAYS of history, not files, which is why this is spelled out.
+  Logback looks at the size at most once per checkIncrement (set to one second here), not on every line: at the few lines a minute this
+  program writes that is exact; only a burst of thousands of lines within one second can push a file briefly past 10 MB.
+  The files are left uncompressed: a person helping over the phone can open them in Notepad.
+  Never log personal data, passwords, keys or request bodies (a test scans the log for every secret the scenario used).
+  Levels come from application.properties (logging.level.*).
+-->
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <file>${LOG_FILE}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${LOG_FILE}.%i</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>5</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>10MB</maxFileSize>
+            <checkIncrement>1 second</checkIncrement>
+        </triggeringPolicy>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>

@@ -17,3 +17,11 @@ export const academicYearSchema = z
   });
 
 export type AcademicYearValues = z.infer<typeof academicYearSchema>;
+
+// Mirrors AcademicController.SubjectRequest: the Khmer name is required, the English name is optional.
+export const subjectSchema = z.object({
+  nameKm: z.string().trim().min(1, 'REQUIRED').max(100, 'Size'),
+  nameEn: z.string().trim().max(100, 'Size'),
+});
+
+export type SubjectValues = z.infer<typeof subjectSchema>;

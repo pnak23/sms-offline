@@ -72,6 +72,11 @@ export function savePdfOfCurrentPage(defaultName: string): Promise<{ saved: bool
   return getDesktop().savePdfOfCurrentPage({ defaultName });
 }
 
+/** Save a file the user picks the place for (.xlsx, .pdf or .zip only; the shell checks the extension and size). */
+export async function saveFile(defaultName: string, blob: Blob): Promise<{ saved: boolean }> {
+  return getDesktop().saveFile({ defaultName, bytes: await blob.arrayBuffer() });
+}
+
 export function listPrinters(): Promise<DesktopPrinter[]> {
   return getDesktop().printers.list();
 }
@@ -99,4 +104,45 @@ export function openLogsFolder(): Promise<void> {
 
 export function quitApp(): Promise<void> {
   return getDesktop().quit();
+}
+
+/** The user closed the window. Answer with quitApp() or cancelClose(). */
+export function onCloseRequested(callback: () => void): () => void {
+  return getDesktop().onCloseRequested(callback);
+}
+
+/** A backup is being made while the program closes. */
+export function onClosing(callback: () => void): () => void {
+  return getDesktop().onClosing(callback);
+}
+
+export function cancelClose(): Promise<void> {
+  return getDesktop().cancelClose();
+}
+
+export function openBackupsFolder(): Promise<void> {
+  return getDesktop().openBackupsFolder();
+}
+
+/** Shows a folder dialog and copies the backup there, proving the copy by its hash. */
+export function copyBackupToFolder(id: string): Promise<DesktopBackupCopy> {
+  return getDesktop().backup.copyToFolder({ id });
+}
+
+/** Shows a file dialog and copies the chosen zip into the backend's incoming folder. */
+export function pickBackupForRestore(): Promise<DesktopBackupPick> {
+  return getDesktop().backup.pickForRestore();
+}
+
+export function getDesktopConfig(): Promise<DesktopConfig> {
+  return getDesktop().config.get();
+}
+
+export function updateDesktopConfig(patch: { preset?: DesktopPreset; disableGpu?: boolean }): Promise<DesktopConfig> {
+  return getDesktop().config.update(toPlainData(patch));
+}
+
+/** Restarts the whole program (the backend closes cleanly first). */
+export function relaunchApp(): Promise<void> {
+  return getDesktop().relaunch();
 }

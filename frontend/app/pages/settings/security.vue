@@ -3,7 +3,7 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <div class="page-container">
+  <div class="page-container is-form">
     <PageHeader :title="t('security.title')" :subtitle="t('security.subtitle')" />
 
     <div class="row g-4">

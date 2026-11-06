@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { BApp } from 'bootstrap-vue-next/components/BApp';
 import { useAppStore } from '~/stores/app';
+import { useAcceptanceStore } from '~/stores/acceptance';
+import { useAttendanceChoiceStore } from '~/stores/attendanceChoice';
 import { usePreferencesStore } from '~/stores/preferences';
 import { useSchoolStore } from '~/stores/school';
 import { useSessionStore } from '~/stores/session';
@@ -9,6 +11,8 @@ const app = useAppStore();
 const session = useSessionStore();
 const school = useSchoolStore();
 const preferences = usePreferencesStore();
+const acceptance = useAcceptanceStore();
+const attendanceChoice = useAttendanceChoiceStore();
 
 useIdleLock();
 
@@ -16,10 +20,12 @@ useIdleLock();
 watch(
   () => session.isAuthenticated,
   (signedIn) => {
-    if (signedIn) void Promise.allSettled([school.load(), preferences.load()]);
+    if (signedIn) void Promise.allSettled([school.load(), preferences.load(), acceptance.load()]);
     else {
       school.reset();
       preferences.reset();
+      acceptance.reset();
+      attendanceChoice.reset();
     }
   },
   { immediate: true },
@@ -36,5 +42,7 @@ watch(
     </div>
     <LockOverlay v-if="session.locked" />
     <BackendOverlay v-if="app.backendDown" />
+    <ExitBackupModal />
+    <ClosingOverlay />
   </BApp>
 </template>

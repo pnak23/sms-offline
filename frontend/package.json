@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "description": "Nuxt 4 single-page UI (Khmer), served to Electron through the app:// protocol",

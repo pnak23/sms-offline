@@ -64,6 +64,7 @@
     box-shadow: none;
   }
 
+  .toast-container,
   .lock-overlay,
   .backend-overlay {
     display: none !important;

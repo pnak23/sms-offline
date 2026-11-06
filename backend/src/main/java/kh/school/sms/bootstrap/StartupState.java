@@ -6,7 +6,8 @@ import java.util.Map;
 
 /** Process-wide start-up facts: phase timestamps (for the performance log) and the dirty-shutdown flag. */
 public final class StartupState {
-    public static final String APP_VERSION = "0.1.0";
+    /** The program's version: read from release.json (one authoritative file, docs/RELEASE.md), never typed here. */
+    public static final String APP_VERSION = ProductInfo.get().version();
 
     public static volatile long mainEnteredAt;
     public static volatile long environmentPreparedAt;

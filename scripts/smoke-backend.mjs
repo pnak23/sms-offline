@@ -6,9 +6,11 @@ import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { javaExe } from './lib/jdk.mjs';
+import { latestSchemaVersion } from './lib/schema.mjs';
 
 const jar = path.resolve(process.argv[2] ?? 'backend/target/sms-backend.jar');
-const java = process.argv[3] ?? path.join(process.env.JAVA_HOME ?? 'C:/Users/pnak/.jdks/corretto-21.0.6', 'bin', 'java.exe');
+const java = process.argv[3] ?? javaExe();
 // A folder with a space AND Khmer characters, like a Windows user profile might have.
 const dataDir = mkdtempSync(path.join(tmpdir(), 'sms smoke ទិន្នន័យ '));
 const secret = crypto.randomBytes(32).toString('hex');
@@ -64,7 +66,7 @@ try {
   if (!port) throw new Error('backend did not start; stdout: ' + s.out.join(' | '));
   console.log(`      cold start: ${r.ready.startupMs} ms inside the JVM, ${r.wallMs} ms wall-clock (spawn -> READY)`);
   const h = await (await api(port, '/internal/health')).json();
-  check('1b /internal/health is UP with schema version and phase timings', h.status === 'UP' && h.schemaVersion === '2' && 'flywayMs' in h.startup, JSON.stringify(h.startup));
+  check('1b /internal/health is UP with schema version and phase timings', h.status === 'UP' && h.schemaVersion === latestSchemaVersion() && 'flywayMs' in h.startup, JSON.stringify(h.startup));
   check('1c a request without the launch secret is refused (403)', (await api(port, '/internal/health', {}, false)).status === 403);
   check('1d running.lock exists while running', lock());
   const sd = await api(port, '/internal/shutdown', { method: 'POST' });

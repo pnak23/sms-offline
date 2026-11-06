@@ -1,4 +1,4 @@
-import type { HealthReport, SystemInfo } from '../types/api';
+import type { HealthReport, ProductInfo, SystemInfo } from '../types/api';
 import { http } from './http';
 
 export const systemApi = {
@@ -9,4 +9,7 @@ export const systemApi = {
   deepHealth: () => http.post<HealthReport>('/system/health/deep'),
 
   info: () => http.get<SystemInfo>('/system/info'),
+
+  /** Who the program is (name, version, developer, channel, copyright). Public: the sign-in screen shows it before any account exists. */
+  about: () => http.get<ProductInfo>('/system/about'),
 };

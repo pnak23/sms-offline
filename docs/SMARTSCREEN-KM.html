@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="km">
+<head>
+<meta charset="utf-8">
+<title>KPSMS — ការដំឡើង (SmartScreen)</title>
+<!--
+  Phase 6, D11 (approved 2026-11-05): the installer is NOT signed for the first release, so Windows SmartScreen may show "Windows protected your PC". This one page tells the person
+  who installs KPSMS what to do. DRAFT: every Khmer word is AI-drafted and not reviewed (D19 is pending). The button names are given in English because that is what Windows shows
+  on an English Windows; the wording Windows shows on THIS school's PC was not seen (the installer has not been run: D22). The SHA-256 line is blank on purpose: it is filled in from
+  docs/PHASE6-PROGRESS.md for the final release build (every rebuild gives a different file and number).
+-->
+<style>
+  @page { size: A4; margin: 14mm 16mm; }
+  * { box-sizing: border-box; }
+  body { font-family: "Noto Sans Khmer", "Khmer UI", "Leelawadee UI", "Nirmala UI", sans-serif; font-size: 11pt; line-height: 1.55; color: #111; margin: 0; }
+  header { border-bottom: 3px solid #1f5fa8; padding-bottom: 6px; margin-bottom: 10px; }
+  h1 { font-size: 17pt; margin: 0; color: #173f78; }
+  .sub { margin: 2px 0 0; color: #444; }
+  ol { margin: 6px 0 0; padding-left: 22px; }
+  li { margin: 0 0 8px; }
+  b { color: #173f78; }
+  .btn { display: inline-block; border: 1px solid #1f5fa8; border-radius: 3px; padding: 0 7px; font-family: Arial, sans-serif; font-weight: 700; color: #173f78; background: #eef4fb; }
+  .note { border: 2px solid #1f5fa8; border-radius: 4px; padding: 5px 9px; margin-top: 10px; }
+  .warn { border: 2px solid #b3261e; border-radius: 4px; padding: 5px 9px; margin-top: 10px; }
+  .warn b { color: #b3261e; }
+  code { font-family: Consolas, monospace; font-size: 10pt; background: #f2f2f2; padding: 0 3px; }
+  .blank { display: block; margin-top: 4px; min-height: 20px; border-bottom: 1px solid #333; }
+  footer { margin-top: 12px; font-size: 9.5pt; color: #b3261e; }
+</style>
+</head>
+<body>
+<header>
+  <h1>ការដំឡើងកម្មវិធី KPSMS</h1>
+  <p class="sub">ប្រសិនបើ Windows បង្ហាញសារ «Windows protected your PC»</p>
+</header>
+
+<ol>
+  <li>ចុចពីរដងលើឯកសារ <b>KPSMS-Setup-1.0.0.exe</b>។</li>
+  <li>ប្រសិនបើ Windows បង្ហាញផ្ទាំង <b>Windows protected your PC</b> (SmartScreen) នោះមិនមែនមានន័យថាមានមេរោគទេ។ វាកើតឡើងព្រោះកម្មវិធីតម្លើងនេះមិនទាន់មានហត្ថលេខាឌីជីថលរបស់ក្រុមហ៊ុនបោះពុម្ព (ជាការសម្រេចចិត្តសម្រាប់ការចេញផ្សាយលើកដំបូង)។</li>
+  <li>មុនពេលបន្ត សូមពិនិត្យថា ឈ្មោះឯកសារគឺ <b>KPSMS-Setup-1.0.0.exe</b> ហើយឯកសារនេះមកពីអ្នកដែលអ្នកស្គាល់ និងទុកចិត្ត។</li>
+  <li>បើអ្នកចង់ពិនិត្យឱ្យប្រាកដថា ឯកសារមិនត្រូវបានកែប្រែ សូមបើក PowerShell ហើយវាយ៖<br>
+      <code>Get-FileHash "ផ្លូវទៅកាន់ឯកសារ\KPSMS-Setup-1.0.0.exe" -Algorithm SHA256</code><br>
+      លេខដែលបង្ហាញត្រូវដូចនឹងលេខ SHA-256 ខាងក្រោម៖
+      <span class="blank">&nbsp;</span></li>
+  <li>បើត្រូវតាមលេខ សូមចុច <span class="btn">More info</span> រួចចុច <span class="btn">Run anyway</span> ដើម្បីបន្តការដំឡើង។</li>
+</ol>
+
+<div class="note">
+  កម្មវិធីតម្លើងនេះមិនត្រូវការសិទ្ធិអ្នកគ្រប់គ្រង (administrator) ទេ។ បើ Windows សួររកពាក្យសម្ងាត់អ្នកគ្រប់គ្រង សូមឈប់ ហើយទាក់ទងអ្នកដែលផ្តល់ឯកសារនេះឱ្យអ្នក។
+</div>
+
+<div class="warn">
+  <b>បើកម្មវិធីបង្ការមេរោគរបស់កុំព្យូទ័រនេះទប់ស្កាត់ ឬលុបឯកសារ</b> សូមកុំបិទ ឬរំលងកម្មវិធីបង្ការមេរោគដោយខ្លួនឯងឡើយ។ សូមទាក់ទងអ្នកគ្រប់គ្រងកុំព្យូទ័រ ឬអ្នកដែលផ្តល់កម្មវិធីនេះ។
+</div>
+
+<footer>ព្រាង — មិនទាន់ត្រូវបានត្រួតពិនិត្យដោយអ្នកនិយាយភាសាខ្មែរកំណើតនៅឡើយ (សូមកុំចែកចាយមុនពេលត្រួតពិនិត្យ)។ លេខ SHA-256 ត្រូវបំពេញពីកំណត់ត្រានៃការចេញផ្សាយចុងក្រោយ។</footer>
+</body>
+</html>

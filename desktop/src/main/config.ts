@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { totalmem } from 'node:os';
 import path from 'node:path';
 import { z } from 'zod';
@@ -26,8 +26,15 @@ const ConfigSchema = z.object({
     }).default({ extraArgs: [] }),
   }).default({ port: 0, jvm: { extraArgs: [] } }),
   desktop: z.object({ disableGpu: z.boolean().default(false) }).default({ disableGpu: false }),
+  performance: z.object({ preset: z.enum(['standard', 'low-memory']).default('standard') }).default({ preset: 'standard' }),
 });
 export type AppConfig = z.infer<typeof ConfigSchema>;
+export type Preset = AppConfig['performance']['preset'];
+
+/** What the Performance page may change: exactly these two keys, nothing else of app.json (a renderer can never reach the JVM options). */
+export const ConfigPatchSchema = z.object({ preset: z.enum(['standard', 'low-memory']).optional(), disableGpu: z.boolean().optional() }).strict();
+export type ConfigPatch = z.infer<typeof ConfigPatchSchema>;
+export interface ConfigView { preset: Preset; disableGpu: boolean }
 
 const MIB = 1024 * 1024;
 
@@ -39,13 +46,54 @@ export function defaultMaxHeapMb(totalBytes = totalmem()): number {
   return 512;
 }
 
+/** The Low-memory preset's heap ceiling: the smallest the program is measured to work in (docs/PERF-LOG.md, Phase 5). */
+export const LOW_MEMORY_HEAP_MB = 192;
+
+/**
+ * What else the Low-memory preset changes: it starts with a smaller heap and lets the heap grow only when it is nearly full (the
+ * serial collector's default is to keep a large share of the heap free), so the committed heap follows what the program really holds.
+ */
+export const LOW_MEMORY_FLAGS = ['-XX:MinHeapFreeRatio=10', '-XX:MaxHeapFreeRatio=30'];
+const LOW_MEMORY_INITIAL_MB = 32;
+
+/** The heap a preset asks for. Standard follows the installed RAM; Low-memory never asks for more than {@link LOW_MEMORY_HEAP_MB}. */
+export function presetHeapMb(preset: Preset, totalBytes = totalmem()): number {
+  const standard = defaultMaxHeapMb(totalBytes);
+  return preset === 'low-memory' ? Math.min(standard, LOW_MEMORY_HEAP_MB) : standard;
+}
+
+export function viewConfig(cfg: AppConfig): ConfigView {
+  return { preset: cfg.performance.preset, disableGpu: cfg.desktop.disableGpu };
+}
+
+const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
+
+/**
+ * Changes the two whitelisted settings in app.json and keeps everything else in the file as it was (a hand-edited port or JVM
+ * option survives). Written to a temp file and renamed, so a crash cannot leave half a file. The change applies at the next start.
+ */
+export function updateConfig(configDir: string, patch: ConfigPatch): ConfigView {
+  const file = path.join(configDir, 'app.json');
+  let raw: Record<string, unknown> = {};
+  try {
+    const parsed: unknown = JSON.parse(readFileSync(file, 'utf8'));
+    if (isObject(parsed)) raw = parsed;
+  } catch { /* missing or broken: start from defaults */ }
+  if (patch.preset !== undefined) raw.performance = { ...(isObject(raw.performance) ? raw.performance : {}), preset: patch.preset };
+  if (patch.disableGpu !== undefined) raw.desktop = { ...(isObject(raw.desktop) ? raw.desktop : {}), disableGpu: patch.disableGpu };
+  const tmp = `${file}.tmp`;
+  writeFileSync(tmp, JSON.stringify(raw, null, 2) + '\n', 'utf8');
+  renameSync(tmp, file);
+  return viewConfig(loadConfig(configDir));
+}
+
 export function loadConfig(configDir: string): AppConfig {
   const file = path.join(configDir, 'app.json');
   let raw: unknown = {};
   if (existsSync(file)) {
     try { raw = JSON.parse(readFileSync(file, 'utf8')); } catch (e) { log.warn(`app.json is not valid JSON, using defaults (${(e as Error).message})`); }
   } else {
-    try { writeFileSync(file, JSON.stringify({ backend: { port: 0, jvm: { extraArgs: [] } }, desktop: { disableGpu: false } }, null, 2) + '\n', 'utf8'); } catch { /* read-only is fine */ }
+    try { writeFileSync(file, JSON.stringify({ backend: { port: 0, jvm: { extraArgs: [] } }, desktop: { disableGpu: false }, performance: { preset: 'standard' } }, null, 2) + '\n', 'utf8'); } catch { /* read-only is fine */ }
   }
   const parsed = ConfigSchema.safeParse(raw);
   if (!parsed.success) {
@@ -59,9 +107,10 @@ export function loadConfig(configDir: string): AppConfig {
 export function jvmArgs(cfg: AppConfig, totalBytes = totalmem()): string[] {
   const ramMb = Math.floor(totalBytes / MIB);
   const ceiling = Math.min(2048, Math.floor(ramMb / 2));
-  const requested = cfg.backend.jvm.maxHeapMb ?? defaultMaxHeapMb(totalBytes);
+  const requested = cfg.backend.jvm.maxHeapMb ?? presetHeapMb(cfg.performance.preset, totalBytes);   // a heap written by hand in app.json wins over the preset
   const maxHeap = Math.max(192, Math.min(requested, ceiling));
-  const initialRaw = cfg.backend.jvm.initialHeapMb ?? 64;
+  const lowMemory = cfg.performance.preset === 'low-memory';
+  const initialRaw = cfg.backend.jvm.initialHeapMb ?? (lowMemory ? LOW_MEMORY_INITIAL_MB : 64);
   const initial = Math.max(32, Math.min(initialRaw, maxHeap));
   if (maxHeap !== requested) log.warn(`maxHeapMb ${requested} adjusted to ${maxHeap} (bounds 192..${ceiling})`);
 
@@ -75,6 +124,7 @@ export function jvmArgs(cfg: AppConfig, totalBytes = totalmem()): string[] {
     '-XX:+UseSerialGC', '-XX:TieredStopAtLevel=1',           // C1 only: measured 52 % faster cold start (docs/PERF-LOG.md)
     '-XX:+ExitOnOutOfMemoryError',                             // exit cleanly; no heap dumps (they would contain student data)
     '-Dfile.encoding=UTF-8', '-Dstdout.encoding=UTF-8', '-Dstderr.encoding=UTF-8',
+    ...(lowMemory ? LOW_MEMORY_FLAGS : []),
     ...extra,
   ];
 }

@@ -11,7 +11,7 @@ const props = withDefaults(
     autofocus?: boolean;
     hint?: string;
     rows?: number;
-    inputmode?: 'text' | 'numeric' | 'tel';
+    inputmode?: 'text' | 'numeric' | 'tel' | 'decimal';
     maxlength?: number;
     disabled?: boolean;
     required?: boolean;

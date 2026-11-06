@@ -19,5 +19,11 @@ export function useApiError() {
     return te(`validation.${code}`) ? t(`validation.${code}`) : t('validation.INVALID');
   }
 
-  return { errorText, messageFor, validationText };
+  /** The most specific text for a failed request: its first field problem (e.g. OUT_OF_RANGE), else the failure itself. */
+  function failureText(error: unknown): string {
+    const first = isApiError(error) ? error.fieldErrors[0] : undefined;
+    return first ? validationText(first.code) : messageFor(error);
+  }
+
+  return { errorText, messageFor, validationText, failureText };
 }

@@ -1,5 +1,7 @@
 package kh.school.sms.bootstrap;
 
+import kh.school.sms.backup.BackupException;
+
 /** Turns a start-up exception into a stable code that Electron maps to a Khmer error window (docs §4B layer 2). */
 public final class StartupFailure {
     private StartupFailure() {}
@@ -13,6 +15,10 @@ public final class StartupFailure {
     }
 
     static String classify(Throwable t) {
+        for (Throwable c = t; c != null; c = c.getCause()) {   // a backup / restore failure carries its own stable code
+            if (c instanceof BackupException b) return b.code();
+            if (c.getCause() == c) break;
+        }
         for (Throwable c = t; c != null; c = c.getCause()) {
             String m = String.valueOf(c.getMessage());
             String n = c.getClass().getName();

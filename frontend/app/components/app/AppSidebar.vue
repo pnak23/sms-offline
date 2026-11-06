@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { NAV_GROUPS } from '~/config/nav';
+import { NAV_GROUPS, type NavItem } from '~/config/nav';
+import { usePreferencesStore } from '~/stores/preferences';
+import { useProductStore } from '~/stores/product';
 import { useUiStore } from '~/stores/ui';
 
 const { t } = useI18n();
 const ui = useUiStore();
+const preferences = usePreferencesStore();
+const product = useProductStore();
+onMounted(() => product.load());
+const visible = (item: NavItem): boolean => item.requires !== 'fees' || preferences.feesEnabled;
 </script>
 
 <template>
@@ -18,7 +24,7 @@ const ui = useUiStore();
         <div v-if="group.labelKey && !ui.sidebarCollapsed" class="sidebar-group-title">{{ t(group.labelKey) }}</div>
         <hr v-else-if="group.labelKey" class="sidebar-divider" />
         <NuxtLink
-          v-for="item in group.items"
+          v-for="item in group.items.filter(visible)"
           :key="item.id"
           :to="item.to"
           class="sidebar-link"
@@ -31,6 +37,10 @@ const ui = useUiStore();
         </NuxtLink>
       </div>
     </nav>
+
+    <div v-if="product.info" class="sidebar-version" data-testid="sidebar-version" :title="`${product.info.name} v${product.info.version}`">
+      {{ ui.sidebarCollapsed ? `v${product.info.version}` : product.shortLabel }}
+    </div>
 
     <button
       type="button"

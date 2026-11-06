@@ -4,6 +4,7 @@ const emit = defineEmits<{ next: [] }>();
 
 const { t } = useI18n();
 const health = useHealthReport();
+const showRestore = ref(false);
 const client = useClientChecks();
 
 const checks = computed(() => [...(health.report.value?.checks ?? []), ...client.checks.value]);
@@ -31,9 +32,10 @@ onMounted(runChecks);
     </div>
 
     <div class="restore-note">
-      <button type="button" class="btn btn-outline-secondary btn-sm" disabled>{{ t('setup.welcome.restore') }}</button>
-      <span class="text-muted small">{{ t('setup.welcome.restoreLater') }}</span>
+      <button type="button" class="btn btn-outline-secondary btn-sm" data-testid="setup-restore" @click="showRestore = true">{{ t('setup.welcome.restore') }}</button>
+      <span class="text-muted small">{{ t('setup.welcome.restoreHint') }}</span>
     </div>
+    <RestoreDialog v-model="showRestore" mode="setup" />
 
     <div class="wizard-actions">
       <button type="button" class="btn btn-outline-secondary" :disabled="health.loading.value" @click="runChecks">

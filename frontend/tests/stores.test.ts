@@ -253,9 +253,9 @@ describe('setup store: wizard position', () => {
 });
 
 describe('preferences store', () => {
-  it('uses the approved defaults (10 minutes idle lock, 7 days backup reminder) until loaded', () => {
+  it('uses the approved defaults (10 minutes idle lock, no reminder to copy a backup to a USB stick) until loaded', () => {
     const prefs = usePreferencesStore();
-    expect([prefs.idleLockMinutes, prefs.backupReminderDays]).toEqual([10, 7]);
+    expect([prefs.idleLockMinutes, prefs.backupReminderDays]).toEqual([10, 0]);
   });
 
   it('reads the saved values, and ignores nonsense', async () => {
@@ -263,7 +263,17 @@ describe('preferences store', () => {
     const prefs = usePreferencesStore();
     await prefs.load();
     expect(prefs.idleLockMinutes).toBe(3);
-    expect(prefs.backupReminderDays).toBe(7);
+    expect(prefs.backupReminderDays).toBe(0);   // nonsense falls back to the default: off
+  });
+
+  it('reads a reminder of 0 as off and a chosen number of days as it is', async () => {
+    mockBackend({ 'GET /settings/app': () => reply(200, { 'backup.reminderDays': '0' }) });
+    const prefs = usePreferencesStore();
+    await prefs.load();
+    expect(prefs.backupReminderDays).toBe(0);
+    mockBackend({ 'GET /settings/app': () => reply(200, { 'backup.reminderDays': '14' }) });
+    await prefs.load();
+    expect(prefs.backupReminderDays).toBe(14);
   });
 
   it('save() sends strings and adopts the server answer', async () => {

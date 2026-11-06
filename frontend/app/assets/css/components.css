@@ -432,12 +432,90 @@
   font-size: 2.5rem;
 }
 
+/* who and which version the program is: under the sidebar menu, and on the About page */
+.sidebar-version {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.auth-brand-product {
+  margin: 0 0 0.35rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #5b6b7c;
+}
+
+.about-facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.35rem 1.5rem;
+  margin: 0 0 1rem;
+}
+
+.about-facts dt {
+  font-weight: 600;
+  color: #5b6b7c;
+}
+
+.about-facts dd {
+  margin: 0;
+}
+
+.readiness-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.readiness-chips .badge {
+  font-weight: 400;
+  font-size: 0.9rem;
+  padding: 0.45rem 0.7rem;
+}
+
+.draft-notice {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+/* the printed "these rules are a draft" line on a report card: it prints (it is not .no-print) until the school signs the grading rules off */
+.report-card-draft {
+  margin: 0.4rem 0 0;
+  padding: 0.25rem 0.5rem;
+  border: 1px dashed #9aa6b6;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
 .restore-note {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   flex-wrap: wrap;
   margin-top: 1rem;
+}
+
+/* what a backup holds, shown in the restore dialog: a label and its value side by side, so the buttons stay in view */
+.restore-facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.25rem 1.5rem;
+  margin: 0 0 1rem;
+}
+
+.restore-facts dt {
+  font-weight: 600;
+  color: #5b6b7c;
+}
+
+.restore-facts dd {
+  margin: 0;
 }
 
 .chip-list,
@@ -459,6 +537,154 @@
 
 .subject-item {
   min-width: 16rem;
+}
+
+/* Settings -> Academic: one clean list. A main subject is a row of its own with its sub-subjects grouped and indented under it; the actions sit at the end of the row
+   (a "+ sub-subject" button and two small icons); a subject that is switched off is dimmed. */
+.subject-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.subject-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 1.5rem;
+  margin: 0 0 0.9rem;
+  padding: 0;
+  list-style: none;
+}
+
+.subject-legend li::before {
+  content: '•';
+  margin-right: 0.4rem;
+}
+
+.subject-list.subject-list-manage {
+  display: block;
+  margin: 0 0 1rem;
+  border: 1px solid var(--sms-border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: #fff;
+}
+
+.subject-list-manage .subject-item {
+  min-width: 0;
+  border-top: 1px solid var(--sms-border);
+}
+
+.subject-list-manage .subject-item:first-child {
+  border-top: 0;
+}
+
+.subject-list-manage .subject-item[data-kind='main'] {
+  background: #f3f6f9;
+}
+
+.subject-list-manage .subject-item[data-kind='main'] .subject-name {
+  font-weight: 600;
+}
+
+.subject-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 3rem;
+  padding: 0.5rem 0.9rem;
+}
+
+.subject-switch {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+}
+
+.subject-switch .form-check-label {
+  margin-left: 0.3rem;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.6rem;
+}
+
+.subject-en {
+  color: var(--sms-muted);
+  font-size: 0.85em;
+}
+
+.subject-count {
+  flex: 0 0 auto;
+  padding: 0.1rem 0.6rem;
+  border: 1px solid var(--sms-border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--sms-muted);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.subject-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.subject-icon {
+  padding: 0.25rem 0.5rem;
+  line-height: 1;
+}
+
+.subject-list-manage .subject-sub {
+  background: #fff;
+}
+
+.subject-list-manage .subject-sub .subject-row {
+  padding-left: 2.75rem;
+  box-shadow: inset 3px 0 0 #c9d4de;
+}
+
+.subject-off .subject-name,
+.subject-off .subject-en {
+  opacity: 0.55;
+}
+
+@media (max-width: 700px) {
+  .subject-row {
+    flex-wrap: wrap;
+  }
+}
+
+/* the bar under a paged list: what is shown, the page buttons, how many per page */
+.list-pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem 1.5rem;
+  margin: 0.25rem 0 1.25rem;
+}
+
+.list-pager-info {
+  color: var(--sms-muted);
+  font-size: 0.9rem;
+}
+
+.list-pager-size {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--sms-muted);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.list-pager-size .form-select {
+  width: auto;
 }
 
 .summary-list {
@@ -723,8 +949,1549 @@
   border-bottom: 0.3mm solid #000;
 }
 
+/* ---- Lists and profiles (teachers, classes, students) ------------------------------------------------------------- */
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.filter-search {
+  flex: 1 1 16rem;
+  min-width: 12rem;
+}
+
+.filter-bar .form-select {
+  width: auto;
+  min-width: 10rem;
+}
+
+.filter-check {
+  margin: 0 0 0 0.25rem;
+}
+
+.form-section {
+  margin: 1.25rem 0 0.75rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--sms-border);
+  color: var(--sms-text-muted, #5b6573);
+}
+
+.form-section:first-of-type {
+  margin-top: 0;
+}
+
+.guardian-row {
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--sms-border);
+  border-radius: 0.5rem;
+  background: #fafbfc;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 11rem 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.student-photo-frame {
+  width: 11rem;
+  height: 13.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid var(--sms-border);
+  border-radius: 0.5rem;
+  background: #f1f3f6;
+}
+
+.student-photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.student-photo-placeholder {
+  width: 5rem;
+  height: 5rem;
+  color: #aab2bd;
+}
+
+/* ---- Printed student profile ------------------------------------------------------------------------------------- */
+
+.student-sheet {
+  font-size: 11pt;
+  line-height: 1.7;
+}
+
+.student-sheet-head {
+  display: flex;
+  align-items: center;
+  gap: 5mm;
+  margin-bottom: 4mm;
+}
+
+.student-sheet-logo {
+  width: 20mm;
+  height: 20mm;
+  object-fit: contain;
+}
+
+.student-sheet-school {
+  margin: 0;
+  font-family: var(--sms-title-font);
+  font-size: 14pt;
+  line-height: 1.8;
+}
+
+.student-sheet-address {
+  margin: 0;
+  font-size: 10pt;
+}
+
+.student-sheet-title {
+  margin: 4mm 0 6mm;
+  text-align: center;
+  font-size: 16pt;
+  font-weight: 700;
+}
+
+.student-sheet-top {
+  display: flex;
+  gap: 6mm;
+  align-items: flex-start;
+  margin-bottom: 6mm;
+}
+
+.student-sheet-table {
+  flex: 1;
+  border-collapse: collapse;
+}
+
+.student-sheet-table th,
+.student-sheet-table td {
+  padding: 0.6mm 2mm;
+  border-bottom: 0.2mm solid #999;
+  vertical-align: top;
+}
+
+.student-sheet-table th {
+  width: 42mm;
+  font-weight: 600;
+  text-align: left;
+}
+
+.student-sheet-photo {
+  flex: none;
+  width: 30mm;
+  height: 40mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0.3mm solid #000;
+  font-size: 9pt;
+  text-align: center;
+}
+
+.student-sheet-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.student-sheet-heading {
+  margin: 5mm 0 2mm;
+  font-size: 12pt;
+  font-weight: 700;
+}
+
+.student-sheet-none {
+  margin: 0;
+  font-size: 10pt;
+}
+
+.student-sheet-grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10.5pt;
+}
+
+.student-sheet-grid th,
+.student-sheet-grid td {
+  padding: 0.8mm 2mm;
+  border: 0.2mm solid #777;
+  text-align: left;
+}
+
+.student-sheet-grid th {
+  background: #e9ecef;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.student-sheet-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 10mm;
+  margin-top: 14mm;
+  break-inside: avoid;
+}
+
+.student-sheet-signature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 70mm;
+}
+
+/* ---- Attendance, scores, report cards (Phase 3) ------------------------------------------------------------------- */
+
+.attendance-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.attendance-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.score-input {
+  width: 7rem;
+  text-align: right;
+}
+
+.comment-cell {
+  max-width: 22rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* A printed report card reuses the student sheet's header, grids and footer; these are only its own parts.
+   It is spaced tightly on purpose: twelve subjects must still fit one A4 page (checked in desktop/test/e2e-app.mjs, P3-36b). */
+.report-card {
+  font-size: 10pt;
+  line-height: 1.4;
+}
+
+.report-card + .report-card {
+  margin-top: 1.5rem;
+}
+
+.report-card .student-sheet-head {
+  margin-bottom: 2mm;
+}
+
+.report-card .student-sheet-logo {
+  width: 16mm;
+  height: 16mm;
+}
+
+.report-card .student-sheet-title {
+  margin: 2mm 0 3mm;
+  font-size: 15pt;
+}
+
+.report-card .student-sheet-heading {
+  margin: 3mm 0 1.5mm;
+  font-size: 11pt;
+}
+
+.report-card .student-sheet-table th,
+.report-card .student-sheet-table td {
+  padding: 0.4mm 2mm;
+}
+
+.report-card .student-sheet-grid th,
+.report-card .student-sheet-grid td {
+  padding: 0.5mm 2mm;
+}
+
+.report-card .student-sheet-footer {
+  margin-top: 6mm;
+}
+
+.report-card .signature-line {
+  height: 10mm;
+}
+
+.report-card-sub {
+  margin: -1mm 0 3mm;
+  text-align: center;
+}
+
+.report-card-student {
+  width: 100%;
+}
+
+.report-card .report-card-student th {
+  width: 30mm;
+}
+
+.report-card .report-card-student th:first-child {
+  width: 42mm;
+}
+
+.report-card .report-card-no {
+  width: 12mm;
+  text-align: center;
+}
+
+.report-card .report-card-num {
+  width: 26mm;
+  text-align: right;
+}
+
+.report-card-summary {
+  margin-top: 3mm;
+}
+
+.report-card .report-card-summary th {
+  width: 32mm;
+}
+
+.report-card-note {
+  margin: 1mm 0 0;
+  font-size: 9pt;
+}
+
+.report-card-comment {
+  min-height: 16mm;
+  padding: 2mm 3mm;
+  border: 0.2mm solid #777;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+@media print {
+  .report-card + .report-card {
+    margin-top: 0;
+    break-before: page;
+  }
+
+  .report-card {
+    break-inside: avoid;
+  }
+}
+
+/* ---- Phase 4: dashboard, reports, receipts ------------------------------------------------------------------------- */
+
+.stat-tile {
+  display: block;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.stat-tile:hover {
+  border-color: var(--bs-primary);
+}
+
+.stat-label {
+  color: var(--sms-text-muted, #5b6573);
+  font-size: 0.9rem;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.stat-hint {
+  color: var(--sms-text-muted, #5b6573);
+  font-size: 0.85rem;
+}
+
+.report-choice {
+  cursor: pointer;
+}
+
+.report-choice:not(.active) .report-choice-hint {
+  color: var(--sms-text-muted, #5b6573);
+}
+
+.report-order {
+  width: auto;
+  min-width: 10rem;
+}
+
+/* The national / ministry lines above the school's name on a printed page (Settings -> Printed reports) */
+.print-national {
+  margin-bottom: 3mm;
+  text-align: center;
+}
+
+.print-national p {
+  margin: 0;
+  line-height: 1.7;
+}
+
+.print-national-main {
+  font-family: var(--sms-title-font);
+  font-size: 13pt;
+}
+
+.print-national-sub {
+  font-size: 11pt;
+}
+
+.report-preview {
+  max-width: 30rem;
+  padding: 0.75rem;
+  border: 1px dashed var(--sms-border);
+  border-radius: 0.5rem;
+}
+
+/* A printed report table: wide ones are set in a smaller type so every column still fits the width of A4 */
+.report-sub {
+  margin: -3mm 0 4mm;
+  text-align: center;
+}
+
+.report-sheet .report-table {
+  font-size: 10pt;
+}
+
+.report-sheet-medium .report-table {
+  font-size: 9pt;
+}
+
+.report-sheet-wide .report-table {
+  font-size: 8pt;
+}
+
+.report-sheet .report-num {
+  text-align: right;
+}
+
+.report-sheet .report-table tr {
+  break-inside: avoid;
+}
+
+.report-sheet .report-table thead {
+  display: table-header-group;
+}
+
+/* A receipt: the details run the full width of the page, the amount is the largest thing on it; a voided one is stamped */
+.receipt-sheet .student-sheet-table {
+  width: 100%;
+}
+
+.receipt-sheet .student-sheet-table th {
+  width: 55mm;
+}
+
+.receipt-void {
+  margin: 0 0 4mm;
+  padding: 1.5mm 0;
+  border: 0.8mm solid #b02a37;
+  color: #b02a37;
+  font-size: 18pt;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.1em;
+}
+
 /* ---- Toasts (bootstrap-vue-next container): below the 3.5rem header so titles and the user menu stay readable ------- */
 
 .toast-container.top-0.start-50 {
   top: 3.6rem !important;
+}
+
+/* attendance sessions: the buttons on the attendance screen and the list on its settings page */
+.session-choice .session-times { margin-inline-start: 0.4rem; font-size: 0.85em; opacity: 0.85; white-space: nowrap; }
+.session-choice .btn { white-space: nowrap; }
+[data-testid=period-table] td.fw-medium { min-width: 9rem; }
+
+/* report card options (Settings -> Report card): the optional photo, a closing note, and up to three signature boxes.
+   With one box and no photo the card is laid out exactly as before. */
+.report-card-who.has-photo { display: flex; gap: 3mm; align-items: stretch; }
+.report-card-who.has-photo .report-card-student { flex: 1 1 auto; width: auto; }
+.report-card-photo { flex: 0 0 22mm; height: 26mm; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 0.2mm solid #777; background: #fff; }
+.report-card-photo img { width: 100%; height: 100%; object-fit: cover; }
+.report-card-photo-empty { width: 14mm; height: 14mm; color: #999; }
+.report-card-footnote { margin: 2mm 0 0; font-size: 9pt; text-align: center; overflow-wrap: anywhere; }
+.report-card-signatures { display: flex; gap: 6mm; }
+.report-card-footer[data-signatures="2"], .report-card-footer[data-signatures="3"] { flex-wrap: wrap; }
+.report-card-footer[data-signatures="2"] > *, .report-card-footer[data-signatures="3"] > * { flex: 1 1 100%; }
+.report-card-footer[data-signatures="2"] .student-sheet-signature, .report-card-footer[data-signatures="3"] .student-sheet-signature { flex: 1 1 0; min-width: 0; text-align: center; }
+.report-card-preview { zoom: 0.6; overflow: hidden; border: 1px solid var(--sms-border); pointer-events: none; }
+@media print { .report-card-photo { break-inside: avoid; } }
+
+/* A card that does not fit one A4 page as it is (many subjects with the optional blocks, a long comment) sets itself in a tighter type:
+   ReportCardSheet.vue measures it and adds this class. A card that fits never gets it. */
+.report-card.report-card-compact { font-size: 9pt; line-height: 1.2; }
+.report-card-compact .print-national { margin-bottom: 1mm; }
+.report-card-compact .print-national p { line-height: 1.3; }
+.report-card-compact .print-national-main { font-size: 12pt; }
+.report-card-compact .print-national-sub { font-size: 10pt; }
+.report-card-compact .student-sheet-school { font-size: 12pt; line-height: 1.4; }
+.report-card-compact .student-sheet-address { font-size: 9pt; }
+.report-card-compact .student-sheet-head { margin-bottom: 1mm; }
+.report-card-compact .student-sheet-logo { width: 12mm; height: 12mm; }
+.report-card-compact .student-sheet-title { margin: 1mm 0 1.5mm; font-size: 13pt; }
+.report-card-compact .report-card-sub { margin: 0 0 1.5mm; }
+.report-card-compact .student-sheet-heading { margin: 1.5mm 0 1mm; font-size: 10pt; }
+.report-card-compact .student-sheet-table th, .report-card-compact .student-sheet-table td { padding: 0.2mm 1.5mm; }
+.report-card-compact .student-sheet-grid th, .report-card-compact .student-sheet-grid td { padding: 0.25mm 1.5mm; }
+.report-card-compact .report-card-summary { margin-top: 1.5mm; }
+.report-card-compact .report-card-comment { min-height: 9mm; padding: 1mm 2mm; }
+.report-card-compact .student-sheet-footer { margin-top: 2mm; }
+.report-card-compact .signature-line { height: 7mm; }
+.report-card-compact .report-card-photo { flex-basis: 17mm; height: 21mm; }
+.report-card-compact .report-card-photo-empty { width: 10mm; height: 10mm; }
+.report-card-compact .report-card-footnote { margin-top: 1mm; font-size: 8.5pt; }
+
+/* ---- the roll of honour (តារាងកិត្តិយស): the options window and the printed certificate ------------------------------------------------ */
+
+/* the ten artwork choices in the options window */
+.honor-style-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: 0.6rem; }
+.honor-style-card { display: block; margin: 0; padding: 0.4rem 0.5rem 0.45rem; border: 1px solid var(--sms-border); border-radius: 0.5rem; background: #fff; text-align: center; cursor: pointer; }
+.honor-style-card:hover { border-color: var(--bs-primary); }
+.honor-style-card.active { border: 2px solid var(--bs-primary); padding: calc(0.4rem - 1px) calc(0.5rem - 1px) calc(0.45rem - 1px); box-shadow: 0 0 0 0.15rem rgba(var(--bs-primary-rgb), 0.2); }
+.honor-style-choice input:focus-visible + .honor-style-card { outline: 2px solid var(--bs-primary); outline-offset: 2px; }
+.honor-style-preview { display: block; aspect-ratio: 320 / 120; }
+.honor-style-preview svg { display: block; width: 100%; height: 100%; }
+.honor-style-name { display: block; margin-top: 0.15rem; font-size: 0.85rem; line-height: 1.5; }
+
+/* The certificate. On screen the sheet is the A4 page with its 15 mm margins (the .print-sheet rules); in print the margin comes from @page. The page itself is
+   always the printable area (180 mm x 265 mm): the art fills it, the content sits on top in a column, and the frames take whatever height is left. */
+.honor-sheet { break-after: page; }
+.honor-sheet:last-of-type { break-after: auto; }
+.honor-page { position: relative; width: 180mm; height: 265mm; overflow: hidden; background: #fff; }
+.honor-art { position: absolute; inset: 0; }
+.honor-art > svg { display: block; width: 100%; height: 100%; }
+.honor-content { position: relative; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; padding: 8mm 5mm 14mm; }
+/* air between the national header and the title (the owner's sample has about 4 % of the page height there) */
+.honor-head { text-align: center; margin-bottom: 8.4mm; }
+/* the national header: both lines in the title font, as on a Cambodian certificate; a third line (optional, from the settings) is set smaller */
+.honor-national { margin-bottom: 1mm; }
+.honor-national p { margin: 0; font-family: var(--sms-title-font); line-height: 1.65; }
+.honor-national-main { font-size: 13pt; }
+.honor-national-sub { font-size: 12pt; }
+p.honor-national-extra { font-family: inherit; font-size: 10.5pt; line-height: 1.5; }
+.honor-divider { width: 52mm; height: 4.5mm; margin: 0 auto; }
+.honor-divider > svg { display: block; width: 100%; height: 100%; }
+.honor-top { display: grid; grid-template-columns: 32% 1fr 32%; align-items: start; margin-bottom: 2mm; }
+/* pushed down and in so the school block clears the corner ornament of the largest style */
+.honor-school { margin: 7mm 0 0 4mm; font-size: 10.5pt; line-height: 1.55; text-align: center; }
+.honor-school p { margin: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+.honor-titles { text-align: center; }
+.honor-title { margin: 0; font-family: var(--sms-title-font); font-size: 22pt; font-weight: 400; line-height: 1.5; }
+.honor-subtitle { margin: 3.5mm 0 0; font-family: var(--sms-title-font); font-size: 12.3pt; line-height: 1.7; white-space: pre-wrap; }
+
+/* The frames: the area is a size container, so the frames can be sized from the height and width that are really there (cqh / cqw). The variables live on
+   the child because a container's own cq units refer to the container above it. One row of frames is 1 or 2 across; rows overlap by 8 % of a frame because the
+   artwork leaves that much empty at its top and bottom. */
+.honor-rows { flex: 1 1 0; min-height: 0; container-type: size; }
+.honor-grid {
+  --ph-max: 124px;
+  --span: calc(var(--rows) * 0.92 + 0.08);
+  --ph: min(var(--ph-max), calc(100cqh / var(--span)), calc((100cqw - 10px) / 2 * 0.375));
+  --pw: calc(var(--ph) * 320 / 120);
+  --gap-max: 84px;
+  --gap: max(0px, min(calc((100cqh - var(--ph) * var(--span)) / (var(--rows) + 0.5)), var(--gap-max)));
+  display: flex; flex-direction: column; justify-content: center; height: 100%;
+}
+.honor-grid[data-count="10"] { --ph-max: 104px; --gap-max: 26px; }
+.honor-row { display: flex; justify-content: center; gap: 10px; height: var(--ph); flex: none; }
+.honor-row + .honor-row { margin-top: calc(var(--gap) - var(--ph) * 0.08); }
+.honor-plate { position: relative; width: var(--pw); height: var(--ph); flex: none; }
+.honor-plate-art { position: absolute; inset: 0; }
+.honor-plate-art > svg { display: block; width: 100%; height: 100%; }
+.honor-name {
+  position: absolute; transform: translateY(-50%); display: flex; align-items: center; justify-content: center; text-align: center;
+  font-weight: 700; line-height: 1.25; white-space: nowrap; font-size: calc(var(--pw) / 13.5 * var(--fit, 1));
+}
+.honor-name[data-wrap] { white-space: normal; line-height: 1.1; }
+.honor-tie-note { margin: 1mm 0 0; font-size: 8.5pt; text-align: center; }
+
+/* the date and the two signatures: the right column carries the date and the class teacher, the left the director; the names line up on the bottom row */
+.honor-foot { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); grid-template-rows: auto auto 18mm auto; column-gap: 6mm; margin-top: 3mm; font-size: 11pt; line-height: 1.9; }
+.honor-foot p { margin: 0; text-align: center; white-space: pre-wrap; }
+.honor-foot-left { grid-column: 1; }
+.honor-foot-right { grid-column: 2; }
+.honor-foot-date { grid-row: 1; }
+.honor-foot-title { grid-row: 2; }
+.honor-foot-name { grid-row: 4; font-weight: 700; }
+
+/* the preview on Settings -> Roll of honour: the real sheet, smaller, not clickable */
+.honor-preview { zoom: 0.62; overflow: hidden; border: 1px solid var(--sms-border); pointer-events: none; }
+
+/* the font toolbar above each text box of the roll of honour (font, size, bold, italic, underline, alignment, keep on one line) */
+.honor-format-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin-bottom: 0.35rem; }
+.honor-format-bar .form-select { width: auto; }
+
+/* ---- the monthly ranking list (ភាពចំណាត់ថ្នាក់ប្រចាំខែ): every student of a class, with the total, the average, the rank and the grade ------------------------------ */
+.ranking-sheet { color: #111; break-after: page; }
+.ranking-sheet:last-of-type { break-after: auto; }
+.ranking-head { text-align: center; }
+.ranking-national { margin-bottom: 1mm; }
+.ranking-national p { margin: 0; font-family: var(--sms-title-font); line-height: 1.65; color: #2f6fa8; }   /* the school's sample sets the national header in blue */
+.ranking-national-main { font-size: 13pt; }
+.ranking-national-sub { font-size: 12pt; }
+p.ranking-national-extra { font-family: inherit; font-size: 10.5pt; line-height: 1.5; }
+.ranking-divider { width: 52mm; height: 4.5mm; margin: 0 auto 4mm; }
+.ranking-divider > svg { display: block; width: 100%; height: 100%; }
+.ranking-school { margin: 0 0 3mm; }
+.ranking-school p { margin: 0; line-height: 1.75; overflow-wrap: anywhere; }
+.ranking-title { margin: 0 0 3mm; color: #c55a11; line-height: 1.6; }
+.ranking-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 10pt; }
+.ranking-table th, .ranking-table td { padding: 0.7mm 1.4mm; border: 0.25mm solid #666; line-height: 1.45; text-align: center; overflow-wrap: anywhere; }
+.ranking-table th { background: #ffd966; font-weight: 700; }
+.ranking-table thead { display: table-header-group; }
+.ranking-table tr { break-inside: avoid; }
+.ranking-table .ranking-name { text-align: left; }
+.ranking-table td.ranking-remarks { background: #e2efda; font-size: 9pt; }
+.ranking-band-A td:not(.ranking-remarks) { background: #e2efda; }
+.ranking-band-B td:not(.ranking-remarks) { background: #ddebf7; }
+.ranking-band-C td:not(.ranking-remarks) { background: #fff2cc; }
+.ranking-band-D td:not(.ranking-remarks) { background: #fce4d6; }
+.ranking-band-E td:not(.ranking-remarks) { background: #f8d7d3; }
+.ranking-band-F td:not(.ranking-remarks) { background: #f4b9b9; }
+/* the figures and the date side by side, then the two titles, room to sign, then the names; kept together on the last page */
+.ranking-foot { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto auto 16mm auto; column-gap: 8mm; margin-top: 5mm; font-size: 10.5pt; line-height: 1.9; break-inside: avoid; }
+.ranking-foot p { margin: 0; text-align: center; }
+.ranking-foot-stats { grid-column: 1; grid-row: 1; }
+.ranking-foot-date { grid-column: 2; grid-row: 1; }
+.ranking-foot-title-left { grid-column: 1; grid-row: 2; margin-top: 4mm; }
+.ranking-foot-title-right { grid-column: 2; grid-row: 2; margin-top: 4mm; }
+.ranking-foot-name-left { grid-column: 1; grid-row: 4; font-weight: 700; }
+.ranking-foot-name-right { grid-column: 2; grid-row: 4; font-weight: 700; }
+/* the list beside the form on the options page: the real sheet at 62 % (a long class scrolls inside its frame, so the form and the list stay side by side) */
+.ranking-preview { zoom: 0.62; overflow-x: hidden; overflow-y: auto; max-height: 1500px; border: 1px solid var(--sms-border); }
+/* "no colours" (the school's choice on the ranking page, saved with the default): every cell of the table is transparent, only the lines are printed. The rows keep their
+   grade class, so switching the colours back on is only this rule leaving. */
+.ranking-sheet.ranking-plain .ranking-table th, .ranking-sheet.ranking-plain .ranking-table td { background: transparent; }
+
+/* the detail under a main subject made of sub-subjects (report card option, off by default) */
+.report-card-scores .report-card-sub td { font-size: 0.92em; color: #333; }
+.report-card-scores .report-card-sub td:nth-child(2) { padding-left: 1.2em; }
+/* homework: the line above the students of one assignment (class, subject, due date, maximum) and the status box */
+.homework-records-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+.homework-status-select {
+  min-width: 11rem;
+}
+
+/* ---- The weekly timetable: the grid sits in its own scrolling frame, so a week with Saturday and Sunday on a small screen scrolls inside the frame, never the page ---- */
+.tt-frame {
+  overflow-x: auto;
+  border: 1px solid var(--bs-border-color, #dee2e6);
+  border-radius: 0.5rem;
+  background: var(--bs-body-bg, #fff);
+}
+
+.tt-grid {
+  width: 100%;
+  min-width: calc(7.5rem + var(--tt-days, 5) * 6.2rem);   /* a six-day week fits 1366x768 at 150 % (a 911 px workspace); seven days scroll inside the frame */
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.tt-grid th,
+.tt-grid td {
+  padding: 0;
+  vertical-align: top;
+  border-right: 1px solid var(--bs-border-color, #dee2e6);
+  border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+}
+
+.tt-grid thead th {
+  padding: 0.4rem 0.5rem;
+  text-align: center;
+  font-weight: 600;
+  background: #e9ecef;
+}
+
+.tt-grid th.tt-time {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  min-width: 7.5rem;
+  width: 7.5rem;
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+  font-weight: 500;
+  background: #f1f3f5;
+}
+
+.tt-times {
+  display: block;
+  font-size: 0.85em;
+  white-space: nowrap;
+}
+
+.tt-name {
+  display: block;
+  font-size: 0.85em;
+  color: #5c636a;
+}
+
+.tt-cell {
+  min-width: 6.2rem;
+}
+
+.tt-cell-button,
+.tt-cell-static {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  width: 100%;
+  min-height: 3.8rem;
+  padding: 0.35rem 0.5rem;
+  text-align: left;
+  background: transparent;
+  border: 0;
+}
+
+.tt-cell-button {
+  cursor: pointer;
+}
+
+.tt-cell-button:hover,
+.tt-cell-button:focus-visible {
+  background: rgba(13, 110, 253, 0.08);
+  outline: none;
+}
+
+.tt-cell[data-state='empty'] .tt-cell-button {
+  align-items: center;
+  justify-content: center;
+  color: #adb5bd;
+}
+
+.tt-subject {
+  font-weight: 600;
+}
+
+.tt-who {
+  font-size: 0.88em;
+  color: #495057;
+}
+
+.tt-inactive {
+  align-self: flex-start;
+}
+
+.tt-break-row th.tt-time,
+.tt-break-row td {
+  background: #e9ecef;
+}
+
+.tt-break-cell {
+  padding: 0.4rem;
+  text-align: center;
+  vertical-align: middle;
+  color: #495057;
+}
+
+.tt-list {
+  max-height: 14rem;
+  overflow: auto;
+  border: 1px solid var(--bs-border-color, #dee2e6);
+  border-radius: 0.35rem;
+}
+
+/* The printed timetable: the time column and each cell show their lines one under the other; a break is one shaded band. A4 portrait unless the person chose landscape. */
+.report-timetable .report-table {
+  font-size: 9pt;
+}
+
+.report-timetable .tt-print-time {
+  width: 18%;
+  font-weight: 500;
+}
+
+.report-timetable .tt-print-cell {
+  height: 11mm;
+  vertical-align: top;
+}
+
+.report-timetable .tt-print-break th,
+.report-timetable .tt-print-break td {
+  text-align: center;
+  background: #d9dde2;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.print-sheet.is-landscape {
+  width: 297mm;
+  min-height: 210mm;
+}
+
+@media print {
+  .print-sheet.is-landscape {
+    width: auto;
+    min-height: 0;
+  }
+}
+
+/* ---- The dashboard: a hero in the brand's deep blue with a gold accent, figure tiles, and read-only charts drawn by hand in SVG (no library). Animation is only for people who have not
+   asked for less motion and whose PC is not on the Low-memory preset: the page adds .chart-animate only then, and the media query below switches it off again whatever happens. ---- */
+.dashboard .dash-hero {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 1.5rem 1.75rem 1.7rem;
+  overflow: hidden;
+  color: #fff;
+  background: linear-gradient(135deg, #0d2b4c 0%, #174a79 55%, #1d5c96 100%);
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(13, 43, 76, 0.22);
+}
+
+.dash-hero::before {
+  content: '';
+  position: absolute;
+  top: -90px;
+  right: -70px;
+  width: 300px;
+  height: 300px;
+  pointer-events: none;
+  background: radial-gradient(circle at 30% 30%, rgba(212, 167, 44, 0.5), rgba(212, 167, 44, 0) 70%);
+  border-radius: 50%;
+}
+
+.dash-hero::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #d4a72c, #f1d675 45%, #d4a72c);
+}
+
+.dash-hero-main {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.dash-hero h1 {
+  font-size: 1.7rem;
+  color: #fff;
+}
+
+.dash-hero-school {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.dash-hero a:not(.btn) {
+  color: #f6dd8a;
+}
+
+.dash-hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.dash-chip {
+  display: inline-flex;
+  gap: 0.4rem;
+  align-items: center;
+  padding: 0.15rem 0.7rem;
+  font-weight: 600;
+  color: #f6dd8a;
+  background: rgba(212, 167, 44, 0.18);
+  border: 1px solid rgba(212, 167, 44, 0.7);
+  border-radius: 999px;
+}
+
+.dash-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.dash-action {
+  display: inline-flex;
+  gap: 0.4rem;
+  align-items: center;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.dash-action:hover,
+.dash-action:focus-visible {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.dash-action.is-primary {
+  font-weight: 600;
+  color: #1d1700;
+  background: #d4a72c;
+  border-color: #d4a72c;
+}
+
+.dash-action.is-primary:hover,
+.dash-action.is-primary:focus-visible {
+  color: #1d1700;
+  background: #e2b73e;
+}
+
+.dash-hero-health {
+  position: relative;
+  flex: none;
+}
+
+.kpi-tile,
+.dash-card,
+.chart-card {
+  border: 0;
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgba(20, 35, 55, 0.06), 0 6px 18px rgba(20, 35, 55, 0.06);
+}
+
+.kpi-tile {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.kpi-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(20, 35, 55, 0.08), 0 12px 26px rgba(20, 35, 55, 0.12);
+}
+
+.kpi-top {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.kpi-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  font-size: 1.15rem;
+  border-radius: 50%;
+}
+
+.kpi-icon.is-blue {
+  color: #1d5c96;
+  background: #e6eff8;
+}
+
+.kpi-icon.is-teal {
+  color: #0f766e;
+  background: #dff3f0;
+}
+
+.kpi-icon.is-violet {
+  color: #6d4fb3;
+  background: #eee9f8;
+}
+
+.kpi-icon.is-gold {
+  color: #8a6400;
+  background: #fbf1d3;
+}
+
+.kpi-spark {
+  float: right;
+  margin-top: 0.35rem;
+}
+
+.kpi-tile .stat-value {
+  font-size: 2.1rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.spark {
+  flex: none;
+  width: 96px;
+  height: 30px;
+}
+
+.spark-line {
+  fill: none;
+  stroke: #8a6400;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.spark-dot,
+.spark-end {
+  fill: #8a6400;
+}
+
+.dash-card .card-header {
+  font-weight: 600;
+  background: transparent;
+  border-bottom: 1px solid var(--sms-border);
+}
+
+.chart-card {
+  height: 100%;
+}
+
+.chart-head {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+  padding: 0.9rem 1rem 0.25rem;
+}
+
+.chart-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  color: var(--sms-primary);
+  background: var(--sms-primary-soft);
+  border-radius: 0.6rem;
+}
+
+.chart-title {
+  flex: 1;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.chart-table-toggle {
+  display: inline-flex;
+  gap: 0.35rem;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--sms-primary);
+}
+
+.chart-body {
+  padding: 0.4rem 1rem 1rem;
+}
+
+.chart-summary {
+  margin-bottom: 0.75rem;
+  font-size: 0.88rem;
+  color: var(--sms-muted);
+}
+
+.chart-note {
+  margin: 0.6rem 0 0;
+  font-size: 0.82rem;
+  color: var(--sms-muted);
+}
+
+.chart-subtitle {
+  margin: 0 0 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.chart-empty {
+  display: flex;
+  align-items: flex-start;
+  padding: 1rem;
+  margin: 0.5rem 0 0;
+  color: var(--sms-muted);
+  background: #f6f8fb;
+  border-radius: 0.75rem;
+}
+
+.chart-skeleton {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0.6rem 0;
+}
+
+.chart-skeleton span {
+  display: block;
+  height: 0.95rem;
+  background: #eef1f5;
+  border-radius: 0.5rem;
+}
+
+.chart-skeleton span:nth-child(2) {
+  width: 80%;
+}
+
+.chart-skeleton span:nth-child(3) {
+  width: 60%;
+}
+
+.chart-failed {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: var(--sms-danger);
+  background: var(--sms-danger-soft);
+  border-radius: 0.75rem;
+}
+
+.chart-details {
+  min-height: 2rem;
+  padding: 0.45rem 0.7rem;
+  margin: 0.6rem 0 0;
+  font-size: 0.88rem;
+  background: var(--sms-primary-soft);
+  border-radius: 0.6rem;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0;
+  margin: 0.6rem 0 0;
+  font-size: 0.85rem;
+  list-style: none;
+}
+
+.chart-legend span {
+  display: inline-block;
+  width: 0.8rem;
+  height: 0.8rem;
+  margin-right: 0.35rem;
+  vertical-align: -1px;
+  border-radius: 50%;
+}
+
+.chart-table-wrap {
+  max-height: 22rem;
+  overflow: auto;
+}
+
+.draft-notice-compact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.9rem;
+  font-size: 0.88rem;
+  color: var(--sms-warning);
+  background: var(--sms-warning-soft);
+  border-radius: 0.75rem;
+}
+
+/* bars */
+.bar-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: minmax(5.5rem, 9.5rem) minmax(0, 1fr) auto;
+  gap: 0.7rem;
+  align-items: center;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.2rem 0.4rem;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: 0.6rem;
+}
+
+.bar-row:hover,
+.bar-row.is-active {
+  background: #f1f5fa;
+}
+
+.bar-row:focus-visible,
+.donut-key:focus-visible,
+.trend-frame:focus-visible {
+  outline: 2px solid var(--sms-primary);
+  outline-offset: 1px;
+}
+
+.bar-label {
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+
+.bar-svg {
+  width: 100%;
+  height: 0.95rem;
+  overflow: visible;
+}
+
+.bar-track {
+  fill: #eef2f7;
+}
+
+.bar-marker {
+  stroke: #1c2430;
+  stroke-width: 1.5;
+  stroke-dasharray: 2 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.bar-value {
+  min-width: 3.2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* donut */
+.donut {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.donut-figure {
+  position: relative;
+  flex: none;
+  width: 10.5rem;
+  height: 10.5rem;
+}
+
+.donut-figure svg {
+  width: 100%;
+  height: 100%;
+}
+
+.donut-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+
+.donut-center strong {
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.donut-center span {
+  font-size: 0.75rem;
+  color: var(--sms-muted);
+}
+
+.donut-slice:not(.is-active) {
+  opacity: 0.86;
+}
+
+.donut-empty {
+  fill: none;
+  stroke: #e5eaf1;
+  stroke-width: 19;
+}
+
+.donut-legend {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 9rem;
+}
+
+.donut-key {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: 0.2rem 0.5rem;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: 0.6rem;
+}
+
+.donut-key:hover,
+.donut-key.is-active {
+  background: #f1f5fa;
+}
+
+.donut-swatch {
+  flex: none;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+}
+
+.donut-key-label {
+  flex: 1;
+}
+
+/* trend */
+.trend-frame {
+  border-radius: 0.75rem;
+}
+
+.trend svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 16rem;
+}
+
+.trend-grid line {
+  stroke: #e3e8ef;
+}
+
+.trend-grid text,
+.trend-axis text {
+  font-size: 11px;
+  fill: var(--sms-muted);
+}
+
+.trend-line {
+  fill: none;
+  stroke: var(--sms-primary);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.trend-area {
+  fill: rgba(29, 92, 150, 0.12);
+}
+
+.trend-dot {
+  fill: #fff;
+  stroke: var(--sms-primary);
+  stroke-width: 2.2;
+}
+
+.trend-dot.is-active {
+  fill: var(--sms-primary);
+}
+
+.trend-gap line {
+  stroke: #b0b9c6;
+  stroke-width: 1.2;
+  stroke-dasharray: 3 4;
+}
+
+.trend-hatch {
+  stroke: #c3cad5;
+  stroke-width: 2;
+}
+
+/* a stretch of text that must not be broken inside (a Khmer word such as អវត្តមាន may be split by the browser's word dictionary into អ + វត្តមាន) */
+.no-break {
+  white-space: nowrap;
+}
+
+.trend-guide {
+  stroke: rgba(29, 92, 150, 0.35);
+  stroke-width: 1;
+}
+
+.trend-hit {
+  fill: transparent;
+  cursor: pointer;
+}
+
+/* the latest examination and the fees */
+.exam-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 1.25rem;
+}
+
+.fee-blocks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 1.25rem;
+}
+
+.fee-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: space-between;
+  margin-bottom: 0.35rem;
+}
+
+/* the dashboard's quiet backup line: the backups on this laptop are fine, so no coloured box, one line (the limits of a backup kept only on the laptop open from the information button) */
+.backup-line {
+  margin-bottom: 0.75rem;
+  padding: 0 0.25rem;
+  font-size: 0.875rem;
+  color: var(--sms-muted);
+}
+
+.backup-line-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 0.5rem;
+  min-height: 2.25rem;
+}
+
+.backup-line-ok {
+  flex: none;
+  font-size: 1.05rem;
+  color: var(--sms-success);
+}
+
+.backup-line-title {
+  font-weight: 600;
+  color: var(--sms-text);
+}
+
+.backup-line-actions {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.backup-line-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 2.25rem;
+  padding: 0 0.6rem;
+  border: 0;
+  border-radius: 0.375rem;
+  background: transparent;
+  color: var(--sms-primary);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.backup-line-action:hover {
+  background: var(--sms-primary-soft);
+  color: var(--sms-primary-hover);
+}
+
+.backup-line-action:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem var(--bs-focus-ring-color);
+}
+
+.backup-line-note {
+  margin: 0 0 0.25rem 1.55rem;
+  padding: 0.55rem 0.8rem;
+  border-left: 3px solid var(--sms-primary);
+  border-radius: 0.375rem;
+  background: var(--sms-info-soft);
+  color: var(--sms-text);
+}
+
+@media (max-width: 991px) {
+  .exam-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard .dash-hero {
+    flex-direction: column;
+  }
+}
+
+/* animation: only where the page asked for it (.chart-animate), and never for a person who prefers less motion */
+.chart-animate .bar-seg {
+  transform-box: fill-box;
+  transform-origin: 0 50%;
+  animation: bar-grow 0.5s ease-out both;
+}
+
+.chart-animate .donut-slice {
+  transform-origin: 60px 60px;
+  animation: donut-in 0.6s ease-out both;
+}
+
+.chart-animate .trend-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: trend-draw 0.9s ease-out forwards;
+}
+
+@keyframes bar-grow {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes donut-in {
+  from {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes trend-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chart-animate .bar-seg,
+  .chart-animate .donut-slice,
+  .chart-animate .trend-line {
+    animation: none !important;
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+
+  .kpi-tile {
+    transition: none;
+  }
+
+  .kpi-tile:hover {
+    transform: none;
+  }
+}
+
+@media print {
+  .dash-hero,
+  .dash-charts {
+    display: none;
+  }
 }

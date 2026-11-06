@@ -58,6 +58,7 @@ public class AcademicYear {
     public boolean isCurrent() { return current; }
     public void setCurrent(boolean v) { this.current = v; }
     public String getStatus() { return status; }
+    public void setStatus(String v) { this.status = v; }
     public long getVersion() { return version; }
     public void setCreatedAt(Instant v) { this.createdAt = v; }
     public void setUpdatedAt(Instant v) { this.updatedAt = v; }

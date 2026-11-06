@@ -1,5 +1,7 @@
 package kh.school.sms;
 
+import kh.school.sms.backup.BackupStore;
+import kh.school.sms.backup.RestoreBootstrap;
 import kh.school.sms.bootstrap.DataDirs;
 import kh.school.sms.bootstrap.ParentWatchdog;
 import kh.school.sms.bootstrap.RunningLock;
@@ -20,6 +22,8 @@ public class SmsApplication {
         try {
             DataDirs.prepareFromEnvironment();
             RunningLock.acquire();
+            BackupStore.cleanLeftovers(DataDirs.root());   // what a killed backup left behind
+            RestoreBootstrap.applyIfPending();             // a confirmed restore is applied before the database is opened
             ParentWatchdog.startIfRequested();
             SpringApplication app = new SpringApplication(SmsApplication.class);
             app.addListeners(new StartupTimingListener());

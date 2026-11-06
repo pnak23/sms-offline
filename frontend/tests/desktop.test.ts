@@ -7,6 +7,8 @@ function fakeDesktop(overrides: Partial<DesktopApi> = {}): DesktopApi {
   return {
     getInfo: vi.fn().mockResolvedValue({ version: '1.2.3', backendBaseUrl: 'http://127.0.0.1:4242' }),
     onBackendStatus: vi.fn(() => () => undefined),
+    onCloseRequested: vi.fn(() => () => undefined),
+    onClosing: vi.fn(() => () => undefined),
     restartBackend: vi.fn().mockResolvedValue(undefined),
     printCurrentPage: vi.fn().mockResolvedValue({ ok: true }),
     savePdfOfCurrentPage: vi.fn().mockResolvedValue({ saved: true }),
@@ -14,8 +16,19 @@ function fakeDesktop(overrides: Partial<DesktopApi> = {}): DesktopApi {
     printers: { list: vi.fn().mockResolvedValue([]) },
     metrics: { get: vi.fn().mockResolvedValue({ totalWorkingSetMb: 1, processCount: 1 }) },
     health: { exportDiagnostics: vi.fn().mockResolvedValue({ saved: true }) },
+    backup: {
+      copyToFolder: vi.fn().mockResolvedValue({ copied: false, reason: 'CANCELLED' }),
+      pickForRestore: vi.fn().mockResolvedValue({ picked: false, reason: 'CANCELLED' }),
+    },
+    config: {
+      get: vi.fn().mockResolvedValue({ preset: 'standard', disableGpu: false }),
+      update: vi.fn().mockResolvedValue({ preset: 'standard', disableGpu: false }),
+    },
     openLogsFolder: vi.fn().mockResolvedValue(undefined),
+    openBackupsFolder: vi.fn().mockResolvedValue(undefined),
     quit: vi.fn().mockResolvedValue(undefined),
+    cancelClose: vi.fn().mockResolvedValue(undefined),
+    relaunch: vi.fn().mockResolvedValue(undefined),
     ...overrides,
   };
 }

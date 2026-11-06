@@ -37,7 +37,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/internal/**",
                                 "/api/v1/auth/status", "/api/v1/auth/login", "/api/v1/auth/setup", "/api/v1/auth/recover",
-                                "/api/v1/system/health").permitAll()
+                                "/api/v1/system/health", "/api/v1/system/about").permitAll()
+                        // restoring is also how a new PC gets its data (setup mode, no account yet); BackupController re-checks the session once an account exists
+                        .requestMatchers("/api/v1/backups/restore", "/api/v1/backups/restore/**").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(e -> e.authenticationEntryPoint((req, res, ex) -> {
                     res.setStatus(401);

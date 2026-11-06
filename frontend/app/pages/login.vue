@@ -12,6 +12,7 @@ const { t } = useI18n();
 const app = useAppStore();
 const session = useSessionStore();
 const notice = app.takeNotice(); // shown once, e.g. after the session expired
+const restored = useRoute().query.restored === '1'; // the page was reloaded after a restore (nothing from before it stays in memory)
 
 const { handleSubmit, setErrors, resetForm } = useForm({
   validationSchema: toTypedSchema(loginSchema),
@@ -43,6 +44,9 @@ const onSubmit = handleSubmit(async (values) => {
 
       <div v-if="notice" class="alert alert-info" role="status">
         <AppIcon name="info-circle-fill" class="mt-1" /><div>{{ t(`auth.notice.${notice}`) }}</div>
+      </div>
+      <div v-if="restored" class="alert alert-success" role="status" data-testid="restored-notice">
+        <AppIcon name="check-circle-fill" class="mt-1" /><div>{{ t('auth.notice.RESTORED') }}</div>
       </div>
       <FormAlert :message="submit.formError.value" :locked-seconds="submit.lockedSeconds.value" :lock-label="submit.lockLabel.value" />
 

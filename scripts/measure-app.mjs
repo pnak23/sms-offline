@@ -7,7 +7,8 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 
 const root = path.resolve(import.meta.dirname, '..');
-const exe = path.resolve(process.argv[2] ?? path.join(root, 'desktop', 'release', 'win-unpacked', 'SchoolManagement.exe'));
+const release = JSON.parse(readFileSync(path.join(root, 'release', 'release.json'), 'utf8'));
+const exe = path.resolve(process.argv[2] ?? path.join(root, 'desktop', 'release', 'win-unpacked', `${release.shortName}.exe`));
 const runs = Number(process.argv[3] ?? 3);
 const idle = Number(process.argv[4] ?? 45);
 const data = mkdtempSync(path.join(tmpdir(), 'sms-measure-'));

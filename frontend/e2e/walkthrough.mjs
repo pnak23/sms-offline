@@ -204,6 +204,8 @@ async function run() {
         window.desktop = {
           getInfo: async () => ({ version: 'e2e-1.0', backendBaseUrl: base }),
           onBackendStatus: () => () => undefined,
+          onCloseRequested: () => () => undefined,
+          onClosing: () => () => undefined,
           restartBackend: async () => undefined,
           printCurrentPage: async () => {
             window.__calls.printed += 1;
@@ -225,7 +227,18 @@ async function run() {
           openLogsFolder: async () => {
             window.__calls.logs += 1;
           },
+          backup: {
+            copyToFolder: async () => ({ copied: false, reason: 'CANCELLED' }),
+            pickForRestore: async () => ({ picked: false, reason: 'CANCELLED' }),
+          },
+          config: {
+            get: async () => ({ preset: 'standard', disableGpu: false }),
+            update: async (patch) => ({ preset: patch.preset ?? 'standard', disableGpu: patch.disableGpu ?? false }),
+          },
+          openBackupsFolder: async () => undefined,
           quit: async () => undefined,
+          cancelClose: async () => undefined,
+          relaunch: async () => undefined,
         };
       }, { base: backend.base });
       // Electron's main process adds the launch secret to requests for the backend; this does the same.
@@ -273,8 +286,12 @@ async function run() {
       await shoot('setup-1-welcome');
     });
 
-    await step('step 1: restore button is disabled; Next is enabled when no check FAILs', async () => {
-      assert(await button(t('setup.welcome.restore')).isDisabled(), 'restore must be disabled');
+    await step('step 1: the restore button is enabled and opens its dialog (which closes without choosing anything); Next is enabled when no check FAILs', async () => {
+      assert(await button(t('setup.welcome.restore')).isEnabled(), 'restore must be enabled');
+      await clickButton(t('setup.welcome.restore'));
+      await page.locator('[data-testid=restore-dialog][data-step=pick]').waitFor();
+      await page.locator('[data-testid=restore-cancel]').click();
+      await page.locator('[data-testid=restore-dialog]').waitFor({ state: 'hidden' });
       assert(await button(t('common.next')).isEnabled(), 'Next must be enabled');
       await clickButton(t('common.next'));
       await heading(t('setup.titles.2')).waitFor();
@@ -417,10 +434,10 @@ async function run() {
       assert(!(await page.locator('.stepper-item.is-current .stepper-dot').innerText()).includes('4'), 'must not restart at step 4');
     });
 
-    await step('step 6: preferences accept Khmer digits, reject out-of-range, backup folder chooser is disabled', async () => {
-      assert((await field('reminderDays').inputValue()) === '7', 'default reminder 7');
+    await step('step 6: preferences accept Khmer digits, reject out-of-range, the USB reminder is off by default and the page says where backups are kept', async () => {
+      assert((await field('reminderDays').inputValue()) === '0', 'the USB reminder is off (0) by default');
       assert((await field('idleLockMinutes').inputValue()) === '10', 'default idle lock 10');
-      assert(await button(t('setup.preferences.chooseFolder')).isDisabled(), 'folder chooser disabled');
+      assert((await page.locator('[data-testid=backup-where]').innerText()).includes(t('setup.preferences.backupWhere')), 'the page says the backups are kept on this laptop');
       await field('idleLockMinutes').fill('0');
       await clickButton(t('common.saveAndContinue'));
       assert((await fieldError('idleLockMinutes')) === t('validation.OUT_OF_RANGE'), 'idle lock 0 is out of range');

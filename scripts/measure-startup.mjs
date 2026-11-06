@@ -6,13 +6,14 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { javaExe } from './lib/jdk.mjs';
 
 const argv = process.argv.slice(2);
 const sep = argv.indexOf('--');
 const opts = Object.fromEntries(argv.slice(0, sep < 0 ? argv.length : sep).reduce((a, v, i, arr) => (v.startsWith('--') ? [...a, [v.slice(2), arr[i + 1]]] : a), []));
 const javaArgs = sep < 0 ? [] : argv.slice(sep + 1);
 const runs = Number(opts.runs ?? 3);
-const cmd = opts.cmd ?? path.join(process.env.JAVA_HOME ?? 'C:/Users/pnak/.jdks/corretto-21.0.6', 'bin', 'java.exe');
+const cmd = opts.cmd ?? javaExe();
 const label = opts.label ?? 'run';
 const secret = crypto.randomBytes(16).toString('hex');
 const dataDir = mkdtempSync(path.join(tmpdir(), 'sms-perf-'));

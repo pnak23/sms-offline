@@ -2,6 +2,9 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import type { Plugin } from 'vite';
 
+// The short name comes from the ONE authoritative release file (docs/RELEASE.md); the window title is built from it at generate time.
+const release = JSON.parse(readFileSync(fileURLToPath(new URL('../release/release.json', import.meta.url)), 'utf8')) as { shortName: string };
+
 /**
  * Offline icons: a virtual module that contains ONLY the Bootstrap Icons listed in app/config/icons.json
  * (the full collection is 1 MB of JSON). Nothing is ever requested from api.iconify.design.
@@ -48,7 +51,7 @@ export default defineNuxtConfig({
     buildAssetsDir: '/_nuxt/',
     head: {
       htmlAttrs: { lang: 'km' },
-      title: 'ប្រព័ន្ធគ្រប់គ្រងសាលាបឋមសិក្សា',
+      title: `${release.shortName} — ប្រព័ន្ធគ្រប់គ្រងសាលាបឋមសិក្សា`,
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
