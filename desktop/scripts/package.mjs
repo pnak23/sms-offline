@@ -8,6 +8,7 @@ import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { readRelease, validateRelease } from '../../scripts/lib/version.mjs';
+import { checkInstallerIncludeFile } from '../../scripts/lib/installerCleanup.mjs';
 
 const desktop = path.resolve(import.meta.dirname, '..');
 const root = path.resolve(desktop, '..');
@@ -15,6 +16,10 @@ const root = path.resolve(desktop, '..');
 const release = readRelease(root);
 const releaseProblems = validateRelease(release);
 if (releaseProblems.length > 0) { console.error(releaseProblems.join('\n')); process.exit(1); }
+// The installer's cleanup of electron-builder's updater copy (desktop/build/installer.nsh): it may delete only that one copy and may remove its folder only if empty.
+// A changed or missing file stops the build.
+const cleanup = checkInstallerIncludeFile(root);
+if (!cleanup.ok) { console.error(`desktop/build/installer.nsh is not the approved cleanup:\n  ${cleanup.problems.join('\n  ')}`); process.exit(1); }
 const target = process.argv[2] === 'dir' ? 'dir' : 'nsis';
 const stage = path.join(desktop, 'build', 'stage');
 
@@ -72,6 +77,7 @@ await build({
       runAfterFinish: true,
       deleteAppDataOnUninstall: false,             // user data lives in %LOCALAPPDATA%\RuralSchoolManagement and is never touched
       artifactName: `${release.shortName}-Setup-\${version}.\${ext}`,
+      include: path.join(desktop, 'build', 'installer.nsh'),   // removes electron-builder's 226 MB copy of the installer after the install and at the uninstall (see that file)
     },
     compression: 'normal',
   },

@@ -11,6 +11,7 @@ import path from 'node:path';
 import { diffManifests, onlyKhmerWording } from './lib/khmerReview.mjs';
 import { javaExe } from './lib/jdk.mjs';
 import { check as checkRelease } from './lib/version.mjs';
+import { checkInstallerIncludeFile } from './lib/installerCleanup.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const SNAPSHOT = path.join(root, 'docs', 'RELEASE-SNAPSHOT.json');
@@ -112,6 +113,9 @@ const electronZip = [path.join(process.env.LOCALAPPDATA ?? '', 'electron', 'Cach
 electronZip ? pass('the Electron runtime zip is cached') : warn('no cached Electron runtime zip was found (the build would download it once)');
 
 // the icon and the owner's logo
+// the installer's cleanup of electron-builder's updater copy (the owner's decision of 2026-11-06): only the approved lines, nothing else
+const cleanup = checkInstallerIncludeFile(root);
+cleanup.ok ? pass('desktop/build/installer.nsh is the approved cleanup (it deletes only the installer\'s updater copy and removes its folder only if empty)') : fail(`desktop/build/installer.nsh is not the approved cleanup: ${cleanup.problems.join('; ')}`);
 ['icon.ico', 'icon.png', 'logo-source.png'].forEach((f) => existsSync(path.join(root, 'desktop', 'build', f)) ? pass(`desktop/build/${f}`) : fail(`desktop/build/${f} is missing`));
 if (existsSync(path.join(root, 'desktop', 'build', 'logo-source.png'))) (await sha256File(path.join(root, 'desktop', 'build', 'logo-source.png'))) === LOGO_SHA256 ? pass('the logo is the owner\'s file, unchanged (SHA-256 matches)') : fail('the logo file differs from the one the owner supplied');
 

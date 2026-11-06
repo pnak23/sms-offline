@@ -18,7 +18,7 @@
     "smoke:export": "node scripts/smoke-export.mjs",
     "reset-admin": "node scripts/reset-admin.mjs",
     "test:reset-admin": "node scripts/test-reset-admin.mjs",
-    "test:desktop": "node --test desktop/test/config.test.mjs desktop/test/backups.test.mjs desktop/test/version.test.mjs desktop/test/windowSize.test.mjs desktop/test/khmerReview.test.mjs",
+    "test:desktop": "node --test desktop/test/config.test.mjs desktop/test/backups.test.mjs desktop/test/version.test.mjs desktop/test/windowSize.test.mjs desktop/test/khmerReview.test.mjs desktop/test/installerCleanup.test.mjs desktop/test/verifyScripts.test.mjs",
     "e2e:shell": "node desktop/test/e2e-shell.mjs",
     "e2e:packaged": "node desktop/test/e2e-packaged.mjs",
     "build:all": "node scripts/build-all.mjs",
@@ -41,6 +41,9 @@
     "sample:seed": "node scripts/seed-sample-data.mjs",
     "sample:start": "node scripts/start-sample.mjs",
     "test:backup-flow": "node scripts/test-backup-flow.mjs",
+    "test:nsis-cleanup": "node desktop/test/nsis-cleanup-selftest.mjs",
+    "verify:all": "node scripts/verify-all.mjs",
+    "check:pages": "node scripts/count-pages.mjs",
     "measure:presets": "node scripts/measure-presets.mjs",
     "e2e:ui": "npm run e2e -w frontend"
   }
